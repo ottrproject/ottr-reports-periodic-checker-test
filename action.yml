@@ -1,4 +1,4 @@
-name: "OTTR checks"
+name: 'OTTR_Reports'
 description: "Run OTTR checks for spelling, urls, and quiz formats"
 inputs:
   check_type:
@@ -13,3 +13,5 @@ inputs:
     description: "What docker image should be used to run these checks?"
     default: jhudsl/course_template:main
     type: string
+runs:
+  using: 'composite'
