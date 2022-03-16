@@ -11,4 +11,4 @@ inputs:
     type: number
 runs:
   using: 'docker'
-  image: 'docker://jhudsl/course_template
+  image: 'jhudsl/course_template'
