@@ -1,0 +1,15 @@
+name: "OTTR checks"
+description: "Run OTTR checks for spelling, urls, and quiz formats"
+inputs:
+  check_type:
+    description: There are three types of reports that can be done and specified: 'spelling', 'urls', or 'quiz_format'.
+    required: true
+    type: string
+  error_min:
+    description: What number of errors should make this check fail?
+    default: 0
+    type: number
+  docker_image:
+    description: "What docker image should be used to run these checks?"
+    default: jhudsl/course_template:main
+    type: string
