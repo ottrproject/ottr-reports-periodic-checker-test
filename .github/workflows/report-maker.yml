@@ -1,5 +1,4 @@
 # Candace Savonen March 2022
-
 name: OTTR checks
 
 on:
@@ -15,6 +14,7 @@ on:
 
 jobs:
   error_check:
+    name: Error check
     runs-on: ubuntu-latest
     container:
       image: jhudsl/course_template:main
