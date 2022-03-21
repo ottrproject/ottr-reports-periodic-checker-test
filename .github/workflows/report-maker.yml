@@ -13,7 +13,7 @@ on:
         type: number
 
 jobs:
-  error-check:
+  error_check:
     runs-on: ubuntu-latest
     container:
       image: jhudsl/course_template:main
