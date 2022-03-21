@@ -11,6 +11,7 @@ on:
       error_min:
         default: 0
         type: number
+        required: true
 
 jobs:
   error_check:
