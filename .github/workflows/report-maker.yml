@@ -16,7 +16,7 @@ jobs:
   error-check:
     runs-on: ubuntu-latest
     container:
-      image: jhudsl/course_template
+      image: jhudsl/course_template:main
 
     steps:
       - name: Checkout files
@@ -54,8 +54,22 @@ jobs:
         shell: bash
 
 ###################### Run the appropriate test ################################
+      - name: Run spelling check
+        if: ${{ inputs.check_type == 'spelling' }}
+        run: |
+          echo "chk_results=$(Rscript scripts/spell-check.R)" >> $GITHUB_ENV
 
-      - name: URLs checker
+      - name: Run quiz check
+        if: ${{ inputs.check_type == 'quiz_format' }}
+        run: |
+          Rscript -e "ottrpal::check_quizzes(quiz_dir = 'quizzes', write_report = TRUE, verbose = TRUE)"
+          results=0
+          if [ -f question_error_report.tsv ]; then
+            results=$(wc -l < question_error_report.tsv >/dev/null)
+          fi
+          echo "chk_results=$results" >> $GITHUB_ENV
+
+     - name: URLs checker
         if: ${{ inputs.check_type == 'urls' }}
         uses: urlstechie/urlchecker-action@master
         with:
@@ -72,21 +86,6 @@ jobs:
         if: ${{ inputs.check_type == 'urls' }}
         run: |
           echo "chk_results=$(Rscript scripts/url-check.R)" >> $GITHUB_ENV
-
-      - name: Run spelling check
-        if: ${{ inputs.check_type == 'spelling' }}
-        run: |
-          echo "chk_results=$(Rscript scripts/spell-check.R)" >> $GITHUB_ENV
-
-      - name: Run quiz check
-        if: ${{ inputs.check_type == 'quiz_format' }}
-        run: |
-          Rscript -e "ottrpal::check_quizzes(quiz_dir = 'quizzes', write_report = TRUE, verbose = TRUE)"
-          results=0
-          if [ -f question_error_report.tsv ]; then
-            results=$(wc -l < question_error_report.tsv >/dev/null)
-          fi
-          echo "chk_results=$results" >> $GITHUB_ENV
 
 ############################# Handle commenting ################################
 
