@@ -8,13 +8,10 @@ on:
 jobs:
 
   check-out-repo:
-    name: Check out OTTR Template
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
 
   spell-check:
     name: Check spelling
