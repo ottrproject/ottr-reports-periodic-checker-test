@@ -1,21 +1,20 @@
-# Candace Savonen Dec 2021
+# Candace Savonen Mar 2022
 
-name: Test ottr reports
-
-on:
-  pull_request:
-    branches: [ main ]
+name: Testing ottr-reports
+on: [pull_request]
 
 jobs:
-
-  do-the-job:
-    name: Test ottr-reports
+  run:
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout
-       uses: actions/checkout@v2
-       with:
-         fetch-depth: 0
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
+
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Check spelling
       uses: ./
