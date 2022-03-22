@@ -1,5 +1,6 @@
 # Candace Savonen March 2022
-name: OTTR checks
+
+name: Run error checker
 
 on:
   workflow_call:
@@ -10,11 +11,9 @@ on:
       error_min:
         default: 0
         type: number
-        required: true
 
 jobs:
-  create-report:
-    name: Error check
+  error-check:
     runs-on: ubuntu-latest
     container:
       image: jhudsl/course_template:main
@@ -33,10 +32,10 @@ jobs:
             report_path='resources/spell_check_results.tsv'
           elif ${{inputs.check_type == 'urls'}} ;then
             error_name='Broken URLs'
-            report_path='resources/url_checks.csv'
+            report_path='resources/url_checks.tsv'
           elif ${{inputs.check_type ==  'quiz_format'}} ;then
             error_name='Quiz format errors'
-            report_path='resources/question_error_report.tsv'
+            report_path='question_error_report.tsv'
           fi
           echo $error_name
           echo $report_path
@@ -55,38 +54,37 @@ jobs:
         shell: bash
 
 ###################### Run the appropriate test ################################
+
+      - name: Run URL checks
+        if: ${{ inputs.check_type == 'urls' }}
+        run: |
+          chk_results=$(Rscript scripts/url-check.R)
+          chk_results="$((chk_results-1))"
+          echo $chk_results
+
+          echo "chk_results=$chk_results" >> $GITHUB_ENV
+
       - name: Run spelling check
         if: ${{ inputs.check_type == 'spelling' }}
         run: |
-          echo "chk_results=$(Rscript scripts/spell-check.R)" >> $GITHUB_ENV
+          chk_results=$(Rscript scripts/spell-check.R)
+          chk_results="$((chk_results-1))"
+          echo $chk_results
+
+          echo "chk_results=$chk_results" >> $GITHUB_ENV
 
       - name: Run quiz check
         if: ${{ inputs.check_type == 'quiz_format' }}
         run: |
           Rscript -e "ottrpal::check_quizzes(quiz_dir = 'quizzes', write_report = TRUE, verbose = TRUE)"
-          results=0
+          chk_results=0
           if [ -f question_error_report.tsv ]; then
-            results=$(wc -l < question_error_report.tsv >/dev/null)
+            chk_results=$(wc -l < question_error_report.tsv)
           fi
-          echo "chk_results=$results" >> $GITHUB_ENV
+          chk_results="$((chk_results-1))"
+          echo $chk_results
 
-     - name: URLs checker
-        if: ${{ inputs.check_type == 'urls' }}
-        uses: urlstechie/urlchecker-action@master
-        with:
-          branch: preview-${{ github.event.pull_request.number }}
-          cleanup: false
-          file_types: .Rmd,.md
-          print_all: false
-          exclude_files: .github/PULL_REQUEST_TEMPLATE.md, docs/*
-          exclude_urls: https://jhudatascience.org/{Course_Name}}
-          force_pass: true
-          save: ${{ steps.declare.outputs.report_path }}
-
-      - name: Count URL errors
-        if: ${{ inputs.check_type == 'urls' }}
-        run: |
-          echo "chk_results=$(Rscript scripts/url-check.R)" >> $GITHUB_ENV
+          echo "chk_results=$chk_results" >> $GITHUB_ENV
 
 ############################# Handle commenting ################################
 
@@ -119,7 +117,7 @@ jobs:
           body-includes: ${{ steps.declare.outputs.error_name }}
 
       - name: There are errors!
-        if: ${{ env.chk_results >= inputs.error_min }}
+        if: ${{ env.chk_results >= env.error_min }}
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -132,11 +130,11 @@ jobs:
           edit-mode: replace
 
       - name: Check check results - fail if too many errors
-        if: ${{ env.chk_results >= inputs.error_min }}
+        if: ${{ env.chk_results >= env.error_min }}
         run: exit 1
 
       - name: No errors
-        if: ${{ env.chk_results < inputs.error_min }}
+        if: ${{ env.chk_results < env.error_min }}
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}

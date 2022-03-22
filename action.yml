@@ -1,5 +1,7 @@
-name: 'OTTR_Reports'
+name: 'ottr-reports'
+author: "Candace Savonen"
 description: "Run OTTR checks for spelling, urls, and quiz formats"
+
 inputs:
   check_type:
     description: There are three types of reports that can be done and specified: 'spelling', 'urls', or 'quiz_format'.
@@ -9,6 +11,7 @@ inputs:
     description: What number of errors should make this check fail?
     default: 0
     type: number
+    
 runs:
   using: 'docker'
   image: 'jhudsl/course_template'
