@@ -7,16 +7,13 @@ on:
 
 jobs:
 
-  check-out-repo:
+  spell-check:
+    needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Actions Repository
       uses: actions/checkout@v2
 
-  spell-check:
-    needs: check-out-repo
-    runs-on: ubuntu-latest
-    steps:
     - name: Check spelling
       uses: ./
       with:
@@ -27,6 +24,9 @@ jobs:
     needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
+
     - name: Check URLs
       uses: ./
       with:
@@ -37,6 +37,9 @@ jobs:
     needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
+      
     - name: Check quiz formatting
       uses: ./
       with:
