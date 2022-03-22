@@ -7,6 +7,8 @@ ls
 
 printf "Looking for which report to be done...\n"
 
+echo "${INPUT_CHECK_TYPE}"
+
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ]; then
   error_name='Spelling errors'
   report_path='resources/spell_check_results.tsv'
