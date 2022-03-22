@@ -1,7 +1,9 @@
 # Candace Savonen Mar 2022
 
 name: Testing ottr-reports
-on: [pull_request]
+on:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   run:
