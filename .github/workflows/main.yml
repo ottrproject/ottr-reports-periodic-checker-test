@@ -6,30 +6,36 @@ on:
     branches: [ main ]
 
 jobs:
-  run:
+
+  check-out-repo:
+    name: Check out OTTR_Template repo
     runs-on: ubuntu-latest
     steps:
-
-    - name: Checkout
       uses: actions/checkout@v2
       with:
         repository: jhudsl/OTTR_Template
         fetch-depth: 0
 
-    - name: Check spelling
-      uses: ./
-      with:
-        check_type: "spelling"
-        error_min: 3
+  spell-check:
+    name: Check spelling
+    needs: check-out-repo
+    uses: ./
+    with:
+      check_type: "spelling"
+      error_min: 3
 
-    - name: Check URLs
-      uses: ./
-      with:
-        check_type: "urls"
-        error_min: 0
+  urls-check:
+    name: Check URLS
+    needs: check-out-repo
+    uses: ./
+    with:
+      check_type: "urls"
+      error_min: 3
 
-    - name: Check quiz formatting
-      uses: ./
-      with:
-        check_type: "quiz_format"
-        error_min: 0
+  quiz-format:
+    name: Check quiz format
+    needs: check-out-repo
+    uses: ./
+    with:
+      check_type: "quiz_format"
+      error_min: 0
