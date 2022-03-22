@@ -8,7 +8,6 @@ on:
 jobs:
 
   spell-check:
-    needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Actions Repository
@@ -21,7 +20,6 @@ jobs:
         error_min: 3
 
   urls-check:
-    needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Actions Repository
@@ -34,12 +32,11 @@ jobs:
         error_min: 0
 
   quiz-format:
-    needs: check-out-repo
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Actions Repository
       uses: actions/checkout@v2
-      
+
     - name: Check quiz formatting
       uses: ./
       with:
