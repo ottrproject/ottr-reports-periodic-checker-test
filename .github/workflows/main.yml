@@ -14,25 +14,31 @@ jobs:
       uses: actions/checkout@v2
 
   spell-check:
-    name: Check spelling
     needs: check-out-repo
-    uses: ./@head
-    with:
-      check_type: "spelling"
-      error_min: 3
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check spelling
+      uses: ./
+      with:
+        check_type: "spelling"
+        error_min: 3
 
   urls-check:
-    name: Check URLS
     needs: check-out-repo
-    uses: ./@head
-    with:
-      check_type: "urls"
-      error_min: 3
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check URLs
+      uses: ./
+      with:
+        check_type: "urls"
+        error_min: 0
 
   quiz-format:
-    name: Check quiz format
     needs: check-out-repo
-    uses: ./@head
-    with:
-      check_type: "quiz_format"
-      error_min: 0
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check quiz formatting
+      uses: ./
+      with:
+        check_type: "quiz_format"
+        error_min: 0
