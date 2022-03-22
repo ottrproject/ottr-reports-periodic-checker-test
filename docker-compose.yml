@@ -4,7 +4,6 @@ services:
     environment:
       - USER=rstudio
       - PASSWORD=qwerty
-      - MY_VAR=1
-    image: "rocker/verse:latest"
+    image: "jhudsl/course_template:main"
     ports:
      - 8787:8787
