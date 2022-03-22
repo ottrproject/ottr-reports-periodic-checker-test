@@ -1,9 +1,0 @@
-version: "3.9"
-services:
-  rstudio:
-    environment:
-      - USER=rstudio
-      - PASSWORD=qwerty
-    image: "jhudsl/course_template:main"
-    ports:
-     - 8787:8787
