@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  rstudio:
+    environment:
+      - USER=rstudio
+      - PASSWORD=qwerty
+      - MY_VAR=1
+    image: "rocker/verse:latest"
+    ports:
+     - 8787:8787
