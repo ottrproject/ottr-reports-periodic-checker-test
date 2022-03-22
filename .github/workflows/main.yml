@@ -16,7 +16,7 @@ jobs:
   spell-check:
     name: Check spelling
     needs: check-out-repo
-    uses: ./
+    uses: ./@head
     with:
       check_type: "spelling"
       error_min: 3
@@ -24,7 +24,7 @@ jobs:
   urls-check:
     name: Check URLS
     needs: check-out-repo
-    uses: ./
+    uses: ./@head
     with:
       check_type: "urls"
       error_min: 3
@@ -32,7 +32,7 @@ jobs:
   quiz-format:
     name: Check quiz format
     needs: check-out-repo
-    uses: ./
+    uses: ./@head
     with:
       check_type: "quiz_format"
       error_min: 0
