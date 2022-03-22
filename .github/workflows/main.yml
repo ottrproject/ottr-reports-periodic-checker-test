@@ -8,11 +8,13 @@ on:
 jobs:
 
   check-out-repo:
-    name: Check out OTTR_Template repo
-    uses: actions/checkout@v2
-    with:
-      repository: jhudsl/OTTR_Template
-      fetch-depth: 0
+    name: Check out OTTR Template
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
   spell-check:
     name: Check spelling
