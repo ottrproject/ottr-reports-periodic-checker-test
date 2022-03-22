@@ -7,9 +7,10 @@ on:
     branches: [ main ]
 
 jobs:
-  run-it:
+
+  do-the-job:
+    name: Test ottr-reports
     runs-on: ubuntu-latest
-    
     steps:
      - name: Checkout
        uses: actions/checkout@v2
