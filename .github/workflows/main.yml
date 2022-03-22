@@ -7,14 +7,12 @@ on:
     branches: [ main ]
 
 jobs:
-  run:
     steps:
      - name: Checkout
        uses: actions/checkout@v2
        with:
          fetch-depth: 0
 
-########################## Make the error reports ##############################
     - name: Check spelling
       uses: ./
       with:
