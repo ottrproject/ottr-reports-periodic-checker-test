@@ -13,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        repo: jhudsl/OTTR_Template
+        repository: jhudsl/OTTR_Template
         fetch-depth: 0
 
     - name: Check spelling
