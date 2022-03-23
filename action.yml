@@ -12,6 +12,14 @@ inputs:
     default: 0
     type: number
 
+outputs:
+  report_path:
+    description: "The relative path to where the report was saved."
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+  error_num:
+    description: "How many errors were found?"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+
 runs:
   using: 'docker'
   image: 'jhudsl/ottr-reports'
@@ -22,4 +30,3 @@ runs:
 branding:
   icon: "briefcase"
   color: "blue"
-  

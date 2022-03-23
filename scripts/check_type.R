@@ -5,7 +5,7 @@ library(optparse)
 
 check_type <- readLines('check_type.txt')
 
-print(paste("Check type specified:", opt$check_type))
+print(paste("Check type specified:", check_type))
 
 if (check_type == "spelling") source("scripts/spell-check.R")
 if (check_type == "urls") source("scripts/url-check.R")
