@@ -1,35 +1,44 @@
 # Candace Savonen Mar 2022
 
 name: Testing ottr-reports
-on: [pull_request]
+on:
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  run:
+
+  spell-check:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Actions Repository
       uses: actions/checkout@v2
 
-
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
     - name: Check spelling
       uses: ./
       with:
-        check_type: "spelling"
+        check_type: spelling
         error_min: 3
+
+  urls-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
 
     - name: Check URLs
       uses: ./
       with:
-        check_type: "urls"
+        check_type: urls
         error_min: 0
+
+  quiz-format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v2
 
     - name: Check quiz formatting
       uses: ./
       with:
-        check_type: "quiz_format"
+        check_type: quiz_format
         error_min: 0
