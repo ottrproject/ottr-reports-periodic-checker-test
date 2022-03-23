@@ -23,9 +23,12 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       repos = 'https://cloud.r-project.org/')"
 
 COPY scripts/* ./scripts/
+COPY main.sh ./main.sh
+RUN chmod +x main.sh
+
 WORKDIR /github/workspace
 
 ARG CHECK_TYPE
 ENV CHECK_TYPE=${INPUT_CHECK_TYPE}
 
-ENTRYPOINT ["echo", "$CHECK_TYPE", ">>", "check_type.txt", ";", "Rscript", "scripts/check_type.R"]
+ENTRYPOINT ["/main.sh"]
