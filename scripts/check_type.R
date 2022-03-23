@@ -1,10 +1,6 @@
 #!/usr/bin/env Rscript
 # Written by Candace Savonen March 2022
 
-if (!("optparse" %in% installed.packages())){
-  install.packages("optparse")
-}
-
 library(optparse)
 
 option_list <- list(

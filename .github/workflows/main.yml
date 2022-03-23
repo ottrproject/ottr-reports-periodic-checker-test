@@ -16,7 +16,7 @@ jobs:
     - name: Check spelling
       uses: ./
       with:
-        check_type: "spelling"
+        check_type: spelling
         error_min: 3
 
   urls-check:
@@ -28,7 +28,7 @@ jobs:
     - name: Check URLs
       uses: ./
       with:
-        check_type: "urls"
+        check_type: urls
         error_min: 0
 
   quiz-format:
@@ -40,5 +40,5 @@ jobs:
     - name: Check quiz formatting
       uses: ./
       with:
-        check_type: "quiz_format"
+        check_type: quiz_format
         error_min: 0
