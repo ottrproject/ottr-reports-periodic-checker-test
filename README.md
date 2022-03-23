@@ -23,7 +23,7 @@ It also will print out the report as a GitHub comment on a pull request.
 
 For spelling checks:
 ```
-uses: jhudsl/OTTR_Reports/report-maker
+uses: jhudsl/ottr-reports@main
 with:
   check_type: "spelling"
   error_min: 3
@@ -31,7 +31,7 @@ with:
 
 For broken url checks:
 ```
-uses: jhudsl/OTTR_Reports/report-maker
+uses: jhudsl/ottr-reports@main
 with:
   check_type: "urls"
   error_min: 0
@@ -39,7 +39,7 @@ with:
 
 For quiz_format checks:
 ```
-uses: jhudsl/OTTR_Reports/report-maker
+uses: jhudsl/ottr-reports@main
 with:
   check_type: "quiz_format"
   error_min: 0
