@@ -21,7 +21,9 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'ottrpal'), \
       repos = 'https://cloud.r-project.org/')"
 
-COPY entrypoint.sh /entrypoint.sh
+ARG CHECK_TYPE=${CHECK_TYPE}
+
+COPY scripts/ scripts/
 WORKDIR /github/workspace
 
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+ENTRYPOINT ["Rscript", "scripts/check_type.R", "--check_type", "$CHECK_TYPE"]
