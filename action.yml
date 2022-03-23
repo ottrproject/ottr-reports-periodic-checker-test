@@ -13,12 +13,12 @@ inputs:
     type: number
 
 outputs:
+  error_name:
+    description: "The name of the error that was run"
   report_path:
     description: "The relative path to where the report was saved."
-    value: ${{ steps.random-number-generator.outputs.random-id }}
   error_num:
-    description: "How many errors were found?"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+    description: "How many errors were found."
 
 runs:
   using: 'docker'
