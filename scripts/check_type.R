@@ -4,17 +4,18 @@
 library(optparse)
 
 option_list <- list(
-  optparse::make_option(
+  make_option(
     c("--check_type"),
     type = "character",
     default = NULL,
+    action = "store",
     help = "Which check type to run?",
   )
 )
 
 # Read the arguments passed
-opt_parser <- optparse::OptionParser(option_list = option_list)
-opt <- optparse::parse_args(opt_parser)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
 
 print(paste("Check type specified:", opt$check_type))
 
