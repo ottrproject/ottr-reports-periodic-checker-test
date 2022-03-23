@@ -18,3 +18,8 @@ runs:
   args:
     - ${{ inputs.check_type }}
     - ${{ inputs.error_min }}
+
+branding:
+  icon: "briefcase"
+  color: "blue"
+  
