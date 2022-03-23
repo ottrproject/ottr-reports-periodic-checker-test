@@ -15,3 +15,6 @@ inputs:
 runs:
   using: 'docker'
   image: 'jhudsl/ottr-reports'
+  args:
+    - ${{ inputs.check_type }}
+    - ${{ inputs.error_min }}

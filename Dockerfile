@@ -18,12 +18,11 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
     c('tidyverse', \
       'rprojroot', \
       'spelling', \
-      'ottrpal'), \
+      'ottrpal', \
+      'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-ARG CHECK_TYPE=${CHECK_TYPE}
-
-COPY scripts/ scripts/
+COPY scripts/ ./scripts/
 WORKDIR /github/workspace
 
-ENTRYPOINT ["Rscript", "scripts/check_type.R", "--check_type", "$CHECK_TYPE"]
+ENTRYPOINT ["Rscript", "scripts/check_type.R", "--check_type", "${INPUT_CHECK_TYPE}"]
