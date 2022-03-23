@@ -2,13 +2,13 @@
 
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
-if ${{ INPUT_CHECK_TYPE == 'spelling'}} ;then
+if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
   error_name='Spelling errors'
   report_path='resources/spell_check_results.tsv'
-elif ${{INPUT_CHECK_TYPE == 'urls'}} ;then
+elif [ "${INPUT_CHECK_TYPE}" == "urls" ];then
   error_name='Broken URLs'
   report_path='resources/url_checks.tsv'
-elif ${{INPUT_CHECK_TYPE ==  'quiz_format'}} ;then
+elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
   error_name='Quiz format errors'
   report_path='question_error_report.tsv'
 fi
