@@ -28,6 +28,4 @@ WORKDIR /github/workspace
 ARG CHECK_TYPE
 ENV CHECK_TYPE=${INPUT_CHECK_TYPE}
 
-RUN echo $CHECK_TYPE >> check_type.txt
-
-ENTRYPOINT ["Rscript", "scripts/check_type.R"]
+ENTRYPOINT ["echo", "$CHECK_TYPE", ">>", "check_type.txt", ";", "Rscript", "scripts/check_type.R"]
