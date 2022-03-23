@@ -25,6 +25,9 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
 COPY scripts/* ./scripts/
 WORKDIR /github/workspace
 
-ENTRYPOINT ["$INPUT_CHECK_TYPE", ">>", "check_type.txt"]
+ARG CHECK_TYPE
+ENV CHECK_TYPE=${INPUT_CHECK_TYPE}
+
+RUN echo $CHECK_TYPE >> check_type.txt
 
 ENTRYPOINT ["Rscript", "scripts/check_type.R"]
