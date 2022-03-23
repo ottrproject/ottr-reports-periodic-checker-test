@@ -20,6 +20,8 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+print(paste("Check type specified:", opt$check_type))
+
 if (opt$check_type == "spelling") source("scripts/spell-check.R")
 if (opt$check_type == "urls") source("scripts/url-check.R")
 if (opt$check_type == "quiz_format") source("scripts/quiz-check.R")

@@ -1,10 +1,6 @@
 #!/usr/bin/env Rscript
 
-# This code was originally written by Josh Shapiro and Candace Savonen
-# for the Childhood Cancer Data Lab an initiative of Alexs Lemonade Stand Foundation.
-# https://github.com/AlexsLemonade/refinebio-examples/blob/33cdeff66d57f9fe8ee4fcb5156aea4ac2dce07f/.github/workflows/style-and-sp-check.yml#L1
-
-# Adapted for this jhudsl repository by Candace Savonen Apr 2021
+# Adapted for this jhudsl repository by Candace Savonen Mar 2022
 
 # Run spell check and save results
 
@@ -13,23 +9,24 @@ library(magrittr)
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-ottrpal::check_quizzes(quiz_dir = 'quizzes', write_report = TRUE, verbose = TRUE)"
+ottrpal::check_quizzes(quiz_dir = file.path(root_dir, 'quizzes'), write_report = TRUE, verbose = TRUE)
 
-if (nrow(sp_errors) > 0) {
-  sp_errors <- sp_errors %>%
-    data.frame() %>%
-    tidyr::unnest(cols = found) %>%
-    tidyr::separate(found, into = c("file", "lines"), sep = ":")
+if (file.exists("question_error_report.tsv")) {
+  quiz_errors <- readr::read_tsv("question_error_report.tsv")
+
+  # Print out how many quiz check errors
+  write(nrow(quiz_errors), stdout())
+} else {
+  quiz_errors <- data.frame()
+  
+  # Print out how many quiz check errors
+  write("1", stdout())
 }
 
-# Print out how many spell check errors
-write(nrow(sp_errors), stdout())
-
-if (!dir.exists("resources")) {
-  dir.create("resources")
-}
-
-if (nrow(sp_errors) > 0) {
-# Save spell errors to file temporarily
-readr::write_tsv(sp_errors, file.path('resources', 'spell_check_results.tsv'))
+if (nrow(quiz_errors) > 0) {
+  if (!dir.exists("resources")) {
+    dir.create("resources")
+    }
+  # Save question errors to file
+  readr::write_tsv(quiz_errors, file.path("resources", "question_error_report.tsv"))
 }
