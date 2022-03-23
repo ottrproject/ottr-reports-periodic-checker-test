@@ -22,8 +22,9 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-COPY scripts/ ./scripts/
+COPY scripts/* ./scripts/
 WORKDIR /github/workspace
 
-ARG CHECK_TYPE=$(echo '${INPUT_CHECK_TYPE}')
-ENTRYPOINT ["Rscript", "scripts/check_type.R", "--check_type", "$(echo $CHECK_TYPE)"]
+ENTRYPOINT ["$INPUT_CHECK_TYPE", ">>", "check_type.txt"]
+
+ENTRYPOINT ["Rscript", "scripts/check_type.R"]
