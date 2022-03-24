@@ -3,13 +3,15 @@
 set -e
 set -o pipefail
 
+cd $GITHUB_WORKSPACE
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 
-echo $script_directory 
+echo $script_directory
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
