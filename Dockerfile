@@ -22,7 +22,7 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-COPY scripts/* ./scripts/
+COPY scripts/ /scripts/
 COPY main.sh ./main.sh
 RUN chmod +x main.sh
 
