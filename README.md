@@ -17,8 +17,6 @@ What number of errors should make this check fail? Default is `0`.
 A report called one of the following:
 'resources/spell_check_results.tsv', 'resources/url_checks.csv', or 'resources/question_error_report.tsv',
 
-It also will print out the report as a GitHub comment on a pull request.
-
 ## Example usage
 
 For spelling checks:
