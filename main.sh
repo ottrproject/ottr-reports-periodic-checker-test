@@ -8,8 +8,8 @@ set -o pipefail
 script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
-cd "$script_directory" || exit
 
+echo $script_directory 
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
@@ -24,7 +24,7 @@ elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
 fi
 
 # Run the check
-chk_results=$(Rscript scripts/check_type.R)
+chk_results=$(Rscript $script_directory/scripts/check_type.R)
 
 # Print out the output
 printf $error_name
