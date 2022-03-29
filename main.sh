@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-ver=$(basename $GITHUB_REF)
+ver=$(basename ${{github.event.release.tag_name}})
 printf "using version: $ver"
 
 cd $GITHUB_WORKSPACE
