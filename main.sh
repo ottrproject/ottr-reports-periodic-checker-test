@@ -39,6 +39,8 @@ printf $error_name
 printf $report_path
 printf $chk_results
 
+rm -rf $script_directory/ottr_report_scripts
+
 # Save output
 echo ::set-output name=error_name::$error_name
 echo ::set-output name=report_path::$report_path
