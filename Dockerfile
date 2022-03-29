@@ -22,9 +22,6 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-# Install svn to copy folder from github
-RUN apt-get update && apt-get install -y --no-install-recommends subversion
-
 COPY main.sh ./main.sh
 RUN chmod +x ./main.sh
 
