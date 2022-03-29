@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-ver=$(basename $GITHUB_ACTIONS)
+ver="v0.5"
 printf "using version: $ver"
 
 cd $GITHUB_WORKSPACE
@@ -29,7 +29,7 @@ elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
 fi
 
 # Copy the scripts from this version
-svn export --force https://github.com/jhudsl/ottr-reports/tree/$ver/scripts $script_directory/ottr_report_scripts
+svn export --force https://github.com/jhudsl/ottr-reports/blob/$ver/scripts $script_directory/ottr_report_scripts
 
 # Run the check
 chk_results=$(Rscript $script_directory/ottr_report_scripts/check_type.R)

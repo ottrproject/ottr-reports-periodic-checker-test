@@ -25,9 +25,8 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
 # Install svn to copy folder from github
 RUN apt-get update && apt-get install -y --no-install-recommends subversion
 
-COPY scripts/ ./ottr_report_scripts/
-COPY main.sh ./ottr_report_scripts/main.sh
-RUN chmod +x ./ottr_report_scripts/main.sh
+COPY main.sh ./main.sh
+RUN chmod +x ./main.sh
 
 WORKDIR /github/workspace
 
