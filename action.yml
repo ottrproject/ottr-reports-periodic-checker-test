@@ -26,6 +26,7 @@ runs:
   args:
     - ${{ inputs.check_type }}
     - ${{ inputs.error_min }}
+    - ${{ github.event.release.tag_name }}
 
 branding:
   icon: "briefcase"
