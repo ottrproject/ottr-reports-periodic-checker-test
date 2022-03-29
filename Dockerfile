@@ -22,12 +22,12 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-COPY main.sh ./main.sh
-RUN chmod +x ./main.sh
+COPY main.sh ./ottr_report_scripts/main.sh
+RUN chmod +x ./ottr_report_scripts/main.sh
 
 WORKDIR /github/workspace
 
 ARG CHECK_TYPE
 ENV CHECK_TYPE=${INPUT_CHECK_TYPE}
 
-ENTRYPOINT ["/bin/bash", "/main.sh"]
+ENTRYPOINT ["/bin/bash", "ottr_report_scripts/main.sh"]
