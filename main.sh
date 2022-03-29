@@ -35,7 +35,7 @@ curl -o $script_directory/url-check.R https://raw.githubusercontent.com/jhudsl/o
 curl -o $script_directory/quiz-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/quiz-check.R
 
 # Run the check
-chk_results=$(Rscript $script_directory/ottr_report_scripts/check_type.R)
+chk_results=$(Rscript $script_directory/check_type.R)
 
 # Print out the output
 printf $error_name
