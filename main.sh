@@ -29,10 +29,10 @@ elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
 fi
 
 # Copy the scripts from this version
-curl https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/check_type.R $script_directory/ottr_report_scripts/check_type.R
-curl https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/spell-check.R $script_directory/ottr_report_scripts/spell-check.R
-curl https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/url-check.R $script_directory/ottr_report_scripts/url-check.R
-curl https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/quiz-check.R $script_directory/ottr_report_scripts/quiz-check.R
+curl -o $script_directory/check_type.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/check_type.R
+curl -o $script_directory/spell-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/spell-check.R
+curl -o $script_directory/url-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/url-check.R
+curl -o $script_directory/quiz-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.5/scripts/quiz-check.R
 
 # Run the check
 chk_results=$(Rscript $script_directory/ottr_report_scripts/check_type.R)
