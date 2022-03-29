@@ -3,6 +3,7 @@
 set -e
 set -o pipefail
 
+ver=$(basename $GITHUB_REF)
 cd $GITHUB_WORKSPACE
 
 # This script should always run as if it were being called from
@@ -25,8 +26,11 @@ elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
   report_path='question_error_report.tsv'
 fi
 
+# Copy the scripts from this version
+svn export --force https://github.com/jhudsl/ottr-reports/tree/$ver/scripts $script_directory/ottr_report_scripts
+
 # Run the check
-chk_results=$(Rscript $script_directory/scripts/check_type.R)
+chk_results=$(Rscript $script_directory/ottr_report_scripts/check_type.R)
 
 # Print out the output
 printf $error_name

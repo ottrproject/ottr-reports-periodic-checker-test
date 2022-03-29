@@ -22,9 +22,12 @@ RUN Rscript -e  "options(warn = 2);install.packages( \
       'optparse'), \
       repos = 'https://cloud.r-project.org/')"
 
-COPY scripts/ /scripts/
-COPY main.sh ./main.sh
-RUN chmod +x main.sh
+# Install svn to copy folder from github
+RUN apt-get update && apt-get install -y --no-install-recommends subversion
+
+ADD scripts/ ./ottr_report_scripts/
+ADD main.sh ./ottr_report_scripts/main.sh
+RUN chmod +x ./ottr_report_scripts/main.sh
 
 WORKDIR /github/workspace
 
