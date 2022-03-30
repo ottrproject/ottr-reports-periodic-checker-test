@@ -3,9 +3,6 @@
 set -e
 set -o pipefail
 
-ver="v0.5"
-printf "using version: $ver"
-
 cd $GITHUB_WORKSPACE
 
 # This script should always run as if it were being called from
@@ -29,10 +26,10 @@ elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
 fi
 
 # Copy the scripts from this version
-curl -o $script_directory/check_type.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.6/scripts/check_type.R
-curl -o $script_directory/spell-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.6/scripts/spell-check.R
-curl -o $script_directory/url-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.6/scripts/url-check.R
-curl -o $script_directory/quiz-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.6/scripts/quiz-check.R
+curl -o $script_directory/check_type.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.7/scripts/check_type.R
+curl -o $script_directory/spell-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.7/scripts/spell-check.R
+curl -o $script_directory/url-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.7/scripts/url-check.R
+curl -o $script_directory/quiz-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/v0.7/scripts/quiz-check.R
 
 # Run the check
 chk_results=$(Rscript $script_directory/check_type.R)
