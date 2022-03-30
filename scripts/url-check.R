@@ -9,7 +9,11 @@ library(magrittr)
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-output_file <- file.path(root_dir, 'resources', 'url_checks.tsv')
+output_file <- file.path(root_dir, 'check_reports', 'url_checks.tsv')
+
+if (!dir.exists('check_reports')) {
+  dir.create('check_reports')
+}
 
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE)

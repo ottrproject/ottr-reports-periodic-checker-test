@@ -9,6 +9,12 @@ library(magrittr)
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
+output_file <- file.path(root_dir, 'check_reports', 'question_error_report.tsv')
+
+if (!dir.exists('check_reports')) {
+  dir.create('check_reports')
+}
+
 ottrpal::check_quizzes(quiz_dir = file.path(root_dir, 'quizzes'), write_report = TRUE, verbose = TRUE)
 
 if (file.exists("question_error_report.tsv")) {
@@ -28,5 +34,5 @@ if (nrow(quiz_errors) > 0) {
     dir.create("resources")
     }
   # Save question errors to file
-  readr::write_tsv(quiz_errors, file.path("resources", "question_error_report.tsv"))
+  readr::write_tsv(quiz_errors, output_file)
 }
