@@ -30,4 +30,4 @@ WORKDIR /github/workspace
 ARG CHECK_TYPE
 ENV CHECK_TYPE=${INPUT_CHECK_TYPE}
 
-ENTRYPOINT ["/bin/bash", "/ottr_report_scripts/main.sh"]
+ENTRYPOINT ["/bin/bash", "/main.sh"]
