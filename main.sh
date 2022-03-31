@@ -43,4 +43,4 @@ printf $chk_results \n
 # Save output
 echo ::set-output name=error_name::$error_name
 echo ::set-output name=report_path::$report_path
-echo ::set-output chk_results=$chk_results
+echo ::set-output name=chk_results=$chk_results
