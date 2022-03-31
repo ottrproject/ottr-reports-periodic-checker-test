@@ -11,7 +11,8 @@ script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 
-printf "running from: $script_directory"
+printf "Running from: $script_directory \n"
+
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
 base_dir=$(Rscript -e "rprojroot::find_root(rprojroot::has_dir('.git'))" | tr -d '"' | sed -e 's/\[1\] //g')

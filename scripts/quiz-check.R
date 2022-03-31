@@ -30,9 +30,8 @@ if (file.exists("question_error_report.tsv")) {
 }
 
 if (nrow(quiz_errors) > 0) {
-  if (!dir.exists("resources")) {
-    dir.create("resources")
-    }
   # Save question errors to file
   readr::write_tsv(quiz_errors, output_file)
 }
+
+message(paste0("Saved to: ", output_file))
