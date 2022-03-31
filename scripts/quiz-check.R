@@ -25,8 +25,9 @@ if (file.exists("question_error_report.tsv")) {
 
   # Print out how many quiz check errors
   write(nrow(quiz_errors), stdout())
+
 } else {
-  quiz_errors <- data.frame("no errors")
+  quiz_errors <- data.frame(errors = "none")
 
   # Print out how many quiz check errors
   write("1", stdout())
