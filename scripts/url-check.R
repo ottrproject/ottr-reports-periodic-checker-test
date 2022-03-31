@@ -58,3 +58,5 @@ if (nrow(all_urls_df) > 0) {
   # Save spell errors to file temporarily
   readr::write_tsv(all_urls_df, output_file)
 }
+
+message(paste0("Saved to: ", output_file))
