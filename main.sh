@@ -15,24 +15,22 @@ printf "Running from: $script_directory \n"
 
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
-base_dir=$(Rscript -e "rprojroot::find_root(rprojroot::has_dir('.git'))" | tr -d '"' | sed -e 's/\[1\] //g')
-
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
   curl -o $script_directory/spell-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/main/scripts/spell-check.R
   error_name='Spelling errors'
-  report_path=$base_dir/check_reports/spell_check_results.tsv
+  report_path=check_reports/spell_check_results.tsv
   chk_results=$(Rscript $script_directory/spell-check.R)
   rm $script_directory/spell-check.R
 elif [ "${INPUT_CHECK_TYPE}" == "urls" ];then
   curl -o $script_directory/url-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/main/scripts/url-check.R
   error_name='Broken URLs'
-  report_path=$base_dir/check_reports/url_checks.tsv
+  report_path=check_reports/url_checks.tsv
   chk_results=$(Rscript $script_directory/url-check.R)
   rm $script_directory/url-check.R
 elif [ "${INPUT_CHECK_TYPE}" == "quiz_format" ];then
   curl -o $script_directory/quiz-check.R https://raw.githubusercontent.com/jhudsl/ottr-reports/main/scripts/quiz-check.R
   error_name='Quiz format errors'
-  report_path=$base_dir/check_reports/question_error_report.tsv
+  report_path=check_reports/question_error_report.tsv
   chk_results=$(Rscript $script_directory/quiz-check.R)
   rm $script_directory/quiz-check.R
 fi
