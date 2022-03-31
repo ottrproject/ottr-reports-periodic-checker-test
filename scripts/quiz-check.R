@@ -17,6 +17,9 @@ if (!dir.exists('check_reports')) {
 
 ottrpal::check_quizzes(quiz_dir = file.path(root_dir, 'quizzes'), write_report = TRUE, verbose = TRUE)
 
+file.copy('question_error_report.tsv', file.path(root_dir, 'check_reports'))
+file.remove('question_error_report.tsv')
+
 if (file.exists("question_error_report.tsv")) {
   quiz_errors <- readr::read_tsv("question_error_report.tsv")
 
