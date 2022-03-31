@@ -17,11 +17,11 @@ if (!dir.exists('check_reports')) {
 
 ottrpal::check_quizzes(quiz_dir = file.path(root_dir, 'quizzes'), write_report = TRUE, verbose = TRUE)
 
-file.copy('question_error_report.tsv', file.path(root_dir, 'check_reports'))
-file.remove('question_error_report.tsv')
-
 if (file.exists("question_error_report.tsv")) {
   quiz_errors <- readr::read_tsv("question_error_report.tsv")
+
+  file.copy('question_error_report.tsv', file.path(root_dir, 'check_reports'))
+  file.remove('question_error_report.tsv')
 
   # Print out how many quiz check errors
   write(nrow(quiz_errors), stdout())
@@ -32,9 +32,7 @@ if (file.exists("question_error_report.tsv")) {
   write("1", stdout())
 }
 
-if (nrow(quiz_errors) > 0) {
-  # Save question errors to file
-  readr::write_tsv(quiz_errors, output_file)
-}
+# Save question errors to file
+readr::write_tsv(quiz_errors, output_file)
 
 message(paste0("Saved to: ", output_file))
