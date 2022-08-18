@@ -13,6 +13,9 @@ library(magrittr)
 if (!("spelling" %in% installed.packages())){
   install.packages("spelling")
 }
+
+cat(getwd())
+
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
