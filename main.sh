@@ -3,9 +3,15 @@
 set -e
 set -o pipefail
 
-cd $GITHUB_WORKSPACE 
+cd $GITHUB_WORKSPACE
 
-printf $GITHUB_WORKSPACE
+# This script should always run as if it were being called from
+# the directory it lives in.
+script_directory="$(perl -e 'use File::Basename;
+  use Cwd "abs_path";
+  print dirname(abs_path(@ARGV[0]));' -- "$0")"
+
+printf "Running from: $script_directory \n"
 
 echo $INPUT_CHECK_TYPE >> check_type.txt
 

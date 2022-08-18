@@ -6,8 +6,6 @@
 
 library(magrittr)
 
-cat(getwd())
-
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
