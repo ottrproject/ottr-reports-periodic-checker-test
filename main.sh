@@ -3,8 +3,6 @@
 set -e
 set -o pipefail
 
-cd $GITHUB_WORKSPACE
-
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
