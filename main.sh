@@ -3,6 +3,10 @@
 set -e
 set -o pipefail
 
+cd $GITHUB_WORKSPACE 
+
+printf $GITHUB_WORKSPACE
+
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
