@@ -19,7 +19,7 @@ You must pass a [Github Secret](https://docs.github.com/en/actions/security-guid
 ## Outputs
 
 A report called one of the following:
-'resources/spell_check_results.tsv', 'resources/url_checks.csv', or 'resources/question_error_report.tsv',
+'check_reports/spell_check_results.tsv', 'check_reports/url_checks.csv', or 'check_reports/question_error_report.tsv',
 
 ## Example usage
 
