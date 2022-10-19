@@ -21,7 +21,7 @@ jobs:
   error-check:
     runs-on: ubuntu-latest
     container:
-      image: jhudsl/base_ottr
+      image: jhudsl/base_ottr:main
 
     steps:
     - name: Checkout
