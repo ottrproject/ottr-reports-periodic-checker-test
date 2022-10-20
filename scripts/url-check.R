@@ -35,7 +35,7 @@ get_urls <- function(file) {
   if (length(urls) > 0 ){
     urls <- gsub(")$|)\\.$|,$", "", urls)
     urls <- urls[!is.na(urls)]
-    urls_status <- parallel::mclapply(urls, test_url, mc.cores	= 4)
+    urls_status <- lapply(urls, test_url)
     url_df <- data.frame(urls, urls_status, file)
     return(url_df)
   }
