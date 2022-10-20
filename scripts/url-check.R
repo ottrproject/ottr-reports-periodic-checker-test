@@ -36,8 +36,12 @@ get_urls <- function(file) {
     urls <- gsub(")$|)\\.$|,$", "", urls)
     urls <- urls[!is.na(urls)]
     urls_status <- lapply(urls, test_url)
+    if (length(urls_status) > 0 ){
     url_df <- data.frame(urls, urls_status, file)
-    return(url_df)
+      return(url_df)
+    } else {
+      url_df <- data.frame()
+    }
   }
 }
 
