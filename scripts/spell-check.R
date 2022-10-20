@@ -24,7 +24,11 @@ if (!dir.exists('check_reports')) {
 }
 
 # Read in dictionary
-dictionary <- readLines(file.path(root_dir, 'resources', 'dictionary.txt'))
+dict_file <- file.path(root_dir, 'resources', 'dictionary.txt')
+dictionary <- readLines(dict_file)
+
+# Make it alphabetical and only unique entries
+writeLines(unique(sort(dictionary)), dict_file)
 
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(pattern = 'Rmd$', recursive = TRUE, full.names = TRUE)
