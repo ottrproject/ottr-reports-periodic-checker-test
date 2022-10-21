@@ -120,7 +120,7 @@ jobs:
         git add --force . || echo "No changes to commit"
         git commit -m 'Add check file' || echo "No changes to commit"
         git fetch
-        git merge -s recursive origin/${{ github.head_ref }} --allow-unrelated-histories
+        git merge origin/${{ github.head_ref }} --allow-unrelated-histories
         git push --force origin $branch_name || echo "No changes to commit"
 
         error_num=$(cat ${{ steps.check_results.outputs.report_path }} | wc -l)
