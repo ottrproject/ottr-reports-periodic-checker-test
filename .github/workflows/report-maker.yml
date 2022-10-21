@@ -41,7 +41,6 @@ jobs:
         branch_name='preview-${{ github.event.pull_request.number }}'
         echo ::set-output name=time::$(date +'%Y-%m-%d')
         echo ::set-output name=commit_id::$GITHUB_SHA
-        echo ::set-output name=error_url::https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$branch_name/${{ steps.check_results.outputs.report_path }}
       shell: bash
 
     - name: Find Comment
@@ -76,12 +75,11 @@ jobs:
         check_type: ${{ inputs.check_type }}
         error_min: ${{ inputs.error_min }}
 
-    - name: Declare file path
+    - name: Declare file path and time
       id: file-path
       run: |
-        echo ::set-output name=report_name::$(basename ${{ steps.check_results.outputs.report_path }})
         echo ::set-output name=time::$(date +'%Y-%m-%d')
-        echo ::set-output name=error_url::https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$branch_name/${{ steps.check_results.outputs.report_path }}
+        echo ::set-output name=error_url::https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$branch_name/$(basename ${{ steps.check_results.outputs.report_path }})
       shell: bash
 
     - name: Find Comment Again
