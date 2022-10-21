@@ -44,7 +44,7 @@ get_urls <- function(file) {
   urls <- stringr::str_extract(content, url_pattern)
   if (length(urls) > 0 ){
     # Remove trailing characters
-    urls <- gsub(")$|)\\.$|,$|:$|'$'", "", urls)
+    urls <- gsub(")$|)\\.$|,$|:$|\\'$'", "", urls)
     urls <- urls[!is.na(urls)]
     urls_status <- sapply(urls, test_url)
     url_df <- data.frame(urls, urls_status, file)
