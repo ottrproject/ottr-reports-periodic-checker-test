@@ -15,6 +15,16 @@ if (!dir.exists('check_reports')) {
   dir.create('check_reports')
 }
 
+# Declare ignore_urls file
+ignore_urls_file <- file.path(root_dir, 'resources', 'ignore-urls.txt')
+
+# Read in ignore urls file if it exists
+if (file.exists(ignore_urls_file)) {
+  ignore_urls <- readLines(ignore_urls_file)
+  } else {
+  ignore_urls <- ""
+}
+
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE)
 
@@ -26,14 +36,15 @@ test_url <- function(url) {
 }
 
 get_urls <- function(file) {
-  message(paste("Testing URLs from file:", file))
+  message(paste("##### Testing URLs from file:", file))
   # Read in a file and return the urls from it
   content <- readLines(file)
   content <- grep("http|com$|www", content, value = TRUE)
   url_pattern <- "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
   urls <- stringr::str_extract(content, url_pattern)
   if (length(urls) > 0 ){
-    urls <- gsub(")$|)\\.$|,$", "", urls)
+    # Remove trailing characters
+    urls <- gsub(")$|)\\.$|,$|:$|'$'", "", urls)
     urls <- urls[!is.na(urls)]
     urls_status <- sapply(urls, test_url)
     url_df <- data.frame(urls, urls_status, file)
@@ -45,7 +56,8 @@ get_urls <- function(file) {
 all_urls <- lapply(files, get_urls)
 
 # Write the file
-all_urls_df <- dplyr::bind_rows(all_urls)
+all_urls_df <- dplyr::bind_rows(all_urls) %>%
+  dplyr::filter(!(urls %in% ignore_urls))
 
 if (nrow(all_urls_df) > 0) {
   all_urls_df <- all_urls_df %>%
