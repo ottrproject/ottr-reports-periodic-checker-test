@@ -45,19 +45,57 @@ test_url <- function(url) {
  }
 
 get_urls <- function(file) {
+  
   message(paste("##### Testing URLs from file:", file))
+  
   # Read in a file and return the urls from it
   content <- readLines(file)
-  content <- grep("http|com$|www", content, value = TRUE)
+  
+  # Set up the possible tags
+  html_tag <- "<a href="
+  include_url_tag <- "include_url\\("
+  include_slide_tag <- "include_slide\\("
+  markdown_tag <- "\\[.*\\]\\(http[s]?.*\\)"
+  markdown_tag_bracket <- "\\[.*\\]: http[s]?"
+  http_gen <- "http[s]?"
   url_pattern <- "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-  urls <- stringr::str_extract(content, url_pattern)
+  
+  # Collect the different kinds of tags in a named vector
+  all_tags <- c(html = html_tag, 
+                knitr = include_url_tag, 
+                ottrpal = include_slide_tag, 
+                markdown = markdown_tag, 
+                markdown_bracket = markdown_tag_bracket, 
+                other_http = http_gen)
+  
+  url_list <- sapply(all_tags, grep, content, value = TRUE)
+  url_list$other_http <- setdiff(url_list$other_http, unlist(url_list[-6]))
+  
+  # Extract the urls only of each type 
+  if (length(url_list$html) > 0 ){
+    url_list$html <- head(rvest::html_attr(rvest::html_nodes(rvest::read_html(url_list$html), "a"), "href"))
+  }
+  url_list$knitr <- stringr::word(url_list$knitr, sep = "include_url\\(\"|\"\\)", 2)
+  url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
+  url_list$markdown <- stringr::word(url_list$markdown, sep = "\\]\\(|\\)", 2)
+  if (length(url_list$markdown_bracket) > 0 ){
+    url_list$markdown_bracket <- paste0("http", stringr::word(url_list$markdown_bracket, sep = "\\]: http", 2))
+  }
+  url_list$other_http <- stringr::word(stringr::str_extract(url_list$other_http, url_pattern), sep = "\\]", 1)
+  
+  # If after the manipulations there's not actually a URL, remove it. 
+  url_list <- lapply(url_list, na.omit)
+  
+  # collapse list
+  urls <- unlist(url_list)
+  
   if (length(urls) > 0 ){
     # Remove trailing characters
-    urls <- gsub(")$|)\\.$|,$|:$|\\'$'", "", urls)
-    urls <- urls[!is.na(urls)]
     urls_status <- sapply(urls, test_url)
     url_df <- data.frame(urls, urls_status, file)
     return(url_df)
+  } else {
+    message("No URLs found")
   }
 }
 
