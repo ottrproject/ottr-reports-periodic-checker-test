@@ -94,6 +94,8 @@ get_urls <- function(file) {
     urls_status <- sapply(urls, test_url)
     url_df <- data.frame(urls, urls_status, file)
     return(url_df)
+  } else {
+    message("No URLs found")
   }
 }
 
