@@ -77,7 +77,7 @@ get_urls <- function(file) {
   }
   url_list$knitr <- stringr::word(url_list$knitr, sep = "include_url\\(\"|\"\\)", 2)
   url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
-  url_list$markdown <- stringr::word(url_list$markdown, sep = "\\]\\(|\\)", 2)
+  url_list$markdown <- stringr::word(url_list$markdown, sep = "\\]\\(", 2)
   if (length(url_list$markdown_bracket) > 0 ){
     url_list$markdown_bracket <- paste0("http", stringr::word(url_list$markdown_bracket, sep = "\\]: http", 2))
   }
