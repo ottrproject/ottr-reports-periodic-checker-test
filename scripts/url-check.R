@@ -74,12 +74,15 @@ get_urls <- function(file) {
   # Extract the urls only of each type 
   if (length(url_list$html) > 0 ){
     url_list$html <- sapply(url_list$html, function(html_line) {
-                            head(rvest::html_attr(rvest::html_nodes(rvest::read_html(html_line), "a"), "href"))[1]
+                            head(rvest::html_attr(rvest::html_nodes(rvest::read_html(html_line), "a"), "href"))
     })
+    url_list$html <- unlist(url_list$html)
   }
   url_list$knitr <- stringr::word(url_list$knitr, sep = "include_url\\(\"|\"\\)", 2)
   url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
-  url_list$markdown <- stringr::word(url_list$markdown, sep = "\\]\\(", 2)
+  url_list$markdown <- stringr::word(url_list$markdown, sep = "\\]\\(|\\)", 2)
+  url_list$markdown <- grep("http", url_list$markdown, value = TRUE)
+    
   if (length(url_list$markdown_bracket) > 0 ){
     url_list$markdown_bracket <- paste0("http", stringr::word(url_list$markdown_bracket, sep = "\\]: http", 2))
   }
