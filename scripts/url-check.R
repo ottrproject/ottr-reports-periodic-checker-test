@@ -73,7 +73,9 @@ get_urls <- function(file) {
   
   # Extract the urls only of each type 
   if (length(url_list$html) > 0 ){
-    url_list$html <- head(rvest::html_attr(rvest::html_nodes(rvest::read_html(url_list$html), "a"), "href"))
+    url_list$html <- sapply(url_list$html, function(html_line) {
+                            head(rvest::html_attr(rvest::html_nodes(rvest::read_html(html_line), "a"), "href"))[1]
+    })
   }
   url_list$knitr <- stringr::word(url_list$knitr, sep = "include_url\\(\"|\"\\)", 2)
   url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
