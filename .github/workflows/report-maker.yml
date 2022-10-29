@@ -120,7 +120,7 @@ jobs:
         git add ${{ steps.check_results.outputs.report_path }} || echo "No changes to commit"
         git commit -m 'Add check file' || echo "No changes to commit"
         git pull
-        git merge origin/${{ github.head_ref }} --allow-unrelated-histories
+        git merge origin/${{ github.head_ref }} --allow-unrelated-histories --strategy-option ours
         git push origin $branch_name --force || echo "No changes to commit"
 
         error_num=$(cat ${{ steps.check_results.outputs.report_path }} | wc -l)
