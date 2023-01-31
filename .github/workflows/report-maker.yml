@@ -44,7 +44,7 @@ jobs:
       shell: bash
 
     - name: Find Comment
-      uses: peter-evans/find-comment@v2
+      uses: peter-evans/find-comment@v2.2.0
       id: fc
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -84,7 +84,7 @@ jobs:
       shell: bash
 
     - name: Find Comment Again
-      uses: peter-evans/find-comment@v2
+      uses: peter-evans/find-comment@v2.2.0
       id: fc2
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -93,7 +93,7 @@ jobs:
 
     - name: Say check is incomplete
       if: steps.check_results.outcome == 'failure'
-      uses: peter-evans/create-or-update-comment@v2
+      uses: peter-evans/create-or-update-comment@v2.2.0
       with:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
@@ -130,7 +130,7 @@ jobs:
 
     - name: There are errors!
       if: ${{ steps.commit.outputs.error_num > inputs.error_min }}
-      uses: peter-evans/create-or-update-comment@v2
+      uses: peter-evans/create-or-update-comment@v2.2.0
       with:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
@@ -156,7 +156,7 @@ jobs:
 
     - name: No errors comment
       if: ${{ steps.commit.outputs.error_num <= inputs.error_min }}
-      uses: peter-evans/create-or-update-comment@v2
+      uses: peter-evans/create-or-update-comment@v2.2.0
       with:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
