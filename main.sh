@@ -41,6 +41,6 @@ printf $report_path \n
 printf $chk_results \n
 
 # Save output
-echo "::set-output name=error_name::$error_name"
-echo "::set-output name=report_path::$report_path"
-echo "::set-output name=chk_results=$chk_results"
+echo "error_name=$error_name" >> $GITHUB_OUTPUT
+echo "report_path=$report_path" >> $GITHUB_OUTPUT
+echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
