@@ -28,19 +28,19 @@ jobs:
       id: setup
       run: |
         if ${{ contains(inputs.check_type, 'spelling') }} ;then
-          echo ::set-output name=error_name::'spelling errors'
+          echo "error_name=spelling errors" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'urls') }} ;then
-          echo ::set-output name=error_name::'broken urls'
+          echo "error_name=broken urls" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
-          echo ::set-output name=error_name::'quiz formatting errors'
+          echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
         fi
 
     - name: Build components of the spell check comment
       id: build-components
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo ::set-output name=time::$(date +'%Y-%m-%d')
-        echo ::set-output name=commit_id::$GITHUB_SHA
+        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Find Comment
@@ -79,8 +79,8 @@ jobs:
       id: file-path
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo ::set-output name=time::$(date +'%Y-%m-%d')
-        echo ::set-output name=error_url::https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}
+        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Find Comment Again
@@ -125,7 +125,7 @@ jobs:
 
         error_num=$(cat ${{ steps.check_results.outputs.report_path }} | wc -l)
         error_num="$((error_num-1))"
-        echo ::set-output name=error_num::$error_num
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: There are errors!
