@@ -93,7 +93,7 @@ jobs:
 
     - name: Say check is incomplete
       if: steps.check_results.outcome == 'failure'
-      uses: peter-evans/create-or-update-comment@v2.2.0
+      uses: peter-evans/create-or-update-comment@v2
       with:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
