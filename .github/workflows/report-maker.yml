@@ -39,7 +39,7 @@ jobs:
       id: build-components
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
         echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
 
