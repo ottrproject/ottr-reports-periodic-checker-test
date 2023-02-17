@@ -1,0 +1,138 @@
+---
+title: "bad markdown"
+author: "Candace Savonen"
+date: "2023-02-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+These examples are from https://www.markdownguide.org/basic-syntax/ 
+
+# Here's a Heading
+
+Try to put a blank line before...
+
+# Heading
+
+
+No blank lines before and after this heading might not work out. 
+# Heading
+Don't do this!
+
+#Here's a Heading
+
+
+Some words and now the heading won't be at the start of the line # Heading
+
+Don't put tabs or spaces in front of your paragraphs.
+
+Keep lines left-aligned like this.
+
+    This can result in unexpected formatting problems.
+
+  Don't add tabs or spaces in front of paragraphs.
+  
+  
+First line with two spaces after.    
+And the next line.
+
+First line with the HTML tag after.<br>
+And the next line.
+
+First line with a backslash after.\
+And the next line.
+
+First line with nothing after.
+And the next line.
+
+
+Love**is**bold
+
+Love__is__bold
+
+
+A*cat*meow	
+
+A_cat_meow
+
+
+This is really***very***important text.	
+
+This is really___very___important text.
+
+
+
+Try to put a blank line before...
+
+> This is a blockquote
+
+...and after a blockquote.
+
+
+Without blank lines, this might not look right.
+> This is a blockquote
+Don't do this!
+
+
+1. First item
+2. Second item	
+
+
+1) First item
+2) Second item
+
+
+
+- First item
+- Second item
+- Third item
+- Fourth item	
+
+
+
++ First item
+* Second item
+- Third item
++ Fourth item
+
+This text right here is going to mess up the below list
+- First item
+- Second item
+- Third item
+- Fourth item	
+
+
+Try to put a blank line before...
+
+---
+
+...and after a horizontal rule.	
+
+
+
+Without blank lines, this would be a heading.
+---
+Don't do this!
+
+
+[link](https://www.example.com/my%20great%20page)
+
+<a href="https://www.example.com/my great page">link</a>
+
+
+[link]
+(https://www.example.com/my great page)
+
+
+
+```{r cars}
+summary(cars)
+```
+
+```{r pressure}
+plot(pressure)
+```
+
