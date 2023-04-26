@@ -87,7 +87,10 @@ get_urls <- function(file) {
     url_list$markdown_bracket <- paste0("http", stringr::word(url_list$markdown_bracket, sep = "\\]: http", 2))
   }
   url_list$other_http <- stringr::word(stringr::str_extract(url_list$other_http, url_pattern), sep = "\\]", 1)
-
+  
+  # Remove trailing comma if present (are there exceptions to this? Can a URL end in a comma?)
+  url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, "(.*)\\,$", "\\1"), sep = "\\]", 1)
+  
   # Remove parentheses only if they are on the outside
   url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, "^\\((.*)\\)$", "\\1"), sep = "\\]", 1)
   
