@@ -58,7 +58,7 @@ get_urls <- function(file) {
   markdown_tag <- "\\[.*\\]\\(http[s]?.*\\)"
   markdown_tag_bracket <- "\\[.*\\]: http[s]?"
   http_gen <- "http[s]?"
-  url_pattern <- "[(]?http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+  url_pattern <- "[(|<]?http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
   
   # Collect the different kinds of tags in a named vector
   all_tags <- c(html = html_tag,
@@ -91,6 +91,9 @@ get_urls <- function(file) {
   # Remove parentheses only if they are on the outside
   url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, "^\\((.*)\\)(.*)$", "\\1"), sep = "\\]", 1)
   url_list$markdown <- stringr::word(stringr::str_replace(url_list$markdown, "^\\((.*)\\)(.*)$", "\\1"), sep = "\\]", 1)
+  
+  # Remove `< >`
+  url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, "^<(.*)>(.*)$", "\\1"), sep = "\\]", 1)
   
   # If after the manipulations there's not actually a URL, remove it.
   url_list <- lapply(url_list, na.omit)
