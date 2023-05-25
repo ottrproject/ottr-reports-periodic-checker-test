@@ -149,6 +149,16 @@ table of contents and enable the `scroll_highlight` feature
 Here's more words that are hidden.
 </details>
 
+### More test edge cases
+
+Tools like AnVIL make it easier to incorporate version control (e.g., using [git](https://git-scm.com/)) and ensures you won't lose work.
+
+Tools like AnVIL make it easier to incorporate version control (e.g., using [git](https://git-scm.com/) version control system) and ensures you won't lose work.
+
+A browser cache [more here](https://en.wikipedia.org/wiki/Cache_(computing)) stores data for quick loading later.
+
+Here is a link to the DaSL Collection: <https://raw.githubusercontent.com/fhdsl/DaSL_Collection/main/resources/collection.tsv>
+
 ## Print out session info
 
 You should print out session info when you have code for [reproducibility purposes](https://jhudatascience.org/Reproducibility_in_Cancer_Informatics/managing-package-versions.html).
