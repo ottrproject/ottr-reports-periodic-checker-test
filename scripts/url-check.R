@@ -86,15 +86,17 @@ get_urls <- function(file) {
   url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
   
   # Check markdown for parentheticals outside of [ ]( )
-  x <- sapply(url_list$markdown, stringr::str_detect, nested_parens)
-  # Break down to parenthetical only
-  url_list$markdown[x] <- stringr::str_extract(url_list$markdown[x], nested_parens)
-  # Remove parentheticals outside [ ]( )
-  url_list$markdown[x] <- stringr::word(stringr::str_replace(url_list$markdown[x], outermost_parens, "\\1"), sep = "\\]", 2)
+  parens_index <- sapply(url_list$markdown, stringr::str_detect, nested_parens)
   
-  url_list$markdown[!x] <- stringr::word(url_list$markdown[!x], sep = "\\]", 2)
-  url_list$markdown <- grep("http", url_list$markdown, value = TRUE)
-
+  if (length(parens_index) >= 1) {
+    # Break down to parenthetical only
+    url_list$markdown[parens_index] <- stringr::str_extract(url_list$markdown[parens_index], nested_parens)
+    # Remove parentheticals outside [ ]( )
+    url_list$markdown[parens_index] <- stringr::word(stringr::str_replace(url_list$markdown[parens_index], outermost_parens, "\\1"), sep = "\\]", 2)
+  
+    url_list$markdown[!parens_index] <- stringr::word(url_list$markdown[!parens_index], sep = "\\]", 2)
+    url_list$markdown <- grep("http", url_list$markdown, value = TRUE)
+  }
   if (length(url_list$markdown_bracket) > 0 ){
     url_list$markdown_bracket <- paste0("http", stringr::word(url_list$markdown_bracket, sep = "\\]: http", 2))
   }
