@@ -29,6 +29,12 @@ if (file.exists(ignore_urls_file)) {
 files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE)
 
 test_url <- function(url) {
+
+   if (url %in% ignore_urls) {
+     message(paste0("Ignoring: ", url))
+     return("ignored")
+   }
+
    message(paste0("Testing: ", url))
 
    url_status <- try(httr::GET(url), silent = TRUE)
