@@ -17,6 +17,7 @@ on:
         type: string
         required: true
       branch_name:
+        type: string
         default: ${GITHUB_REF##*/}
 jobs:
   error-check:
