@@ -81,7 +81,7 @@ jobs:
       id: file-path
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/${GITHUB_REF#refs/heads/}}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${GITHUB_REF#refs/heads/}}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
         echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
       shell: bash
@@ -142,7 +142,7 @@ jobs:
           :warning: ${{ steps.setup.outputs.error_name }} :warning:
           There are ${{ steps.setup.outputs.error_name }} that need to be addressed.
           Click here :arrow_right: [for spelling errors!](${{ steps.file-path.outputs.error_url }}) :exclamation:
-          Add errors that aren't errors to the [${{ steps.setup.outputs.ignore_file }}](${{ steps.setup.outputs.link_to_ignore_file }}) file of this repo. 
+          Add errors that aren't errors to the [${{ steps.setup.outputs.ignore_file }}](${{ steps.file-path.outputs.link_to_ignore_file }}) file of this repo.
           If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
           _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
         edit-mode: replace
