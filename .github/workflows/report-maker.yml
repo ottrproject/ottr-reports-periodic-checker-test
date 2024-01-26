@@ -37,6 +37,17 @@ jobs:
           echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
         fi
 
+    - name: Branch used
+      id: extract_branch
+      run: |
+        if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+          echo "branch=$(echo ${GITHUB_REF##*/})" >> $GITHUB_OUTPUT
+        elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+          echo "branch=$(echo $GITHUB_BASE_REF)" >> $GITHUB_OUTPUT
+        else
+          echo "branch=INVALID_EVENT_BRANCH_UNKNOWN" >> $GITHUB_OUTPUT
+        fi
+
     - name: Build components of the spell check comment
       id: build-components
       run: |
@@ -81,7 +92,7 @@ jobs:
       id: file-path
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${GITHUB_REF#refs/*/}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${{ steps.extract_branch.outputs.branch }}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
         echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
       shell: bash
