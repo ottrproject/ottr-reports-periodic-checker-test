@@ -9,6 +9,8 @@ on:
 jobs:
 
   get_branch:
+    runs-on: ubuntu-latest
+    steps:
     - name: Branch used
       id: extract_branch
       run: echo "branch=$(echo ${GITHUB_REF##*/})" >> $GITHUB_OUTPUT
