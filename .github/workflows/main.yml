@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Branch used
       id: extract_branch
-      run: echo "branch=$(echo ${GITHUB_REF##*/})" >> $GITHUB_OUTPUT
+      run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
 
   spell-check:
     needs: get_branch
