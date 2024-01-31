@@ -57,7 +57,7 @@ tryCatch(
     }
   },
   error = function(e){
-    message("Spell check did not work. Check that your dictionary is formatted correctly. You cannot have special characters (e.g., ó) in the dictionary.txt file. You need to use TeX formatting (e.g., \\'{o}) for these.")
+    message("Spell check did not work. Check that your dictionary is formatted correctly. You cannot have special characters (e.g., Diné) in the dictionary.txt file. You need to use HTML formatting (e.g., Din&eacute;) for these.")
   }
 )
 
