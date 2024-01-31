@@ -42,17 +42,24 @@ files <- c(files, quiz_files)
 files <- grep("About.Rmd", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
 files <- grep("style-sets", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
-# Run spell check
-sp_errors <- spelling::spell_check_files(files, ignore = dictionary)
-
-if (nrow(sp_errors) > 0) {
-  sp_errors <- sp_errors %>%
-    data.frame() %>%
-    tidyr::unnest(cols = found) %>%
-    tidyr::separate(found, into = c("file", "lines"), sep = ":")
-} else {
-  sp_errors <- data.frame(errors = NA)
-}
+tryCatch( 
+  expr = {
+    # Run spell check
+    sp_errors <- spelling::spell_check_files(files, ignore = dictionary)
+    
+    if (nrow(sp_errors) > 0) {
+      sp_errors <- sp_errors %>%
+        data.frame() %>%
+        tidyr::unnest(cols = found) %>%
+        tidyr::separate(found, into = c("file", "lines"), sep = ":")
+    } else {
+      sp_errors <- data.frame(errors = NA)
+    }
+  },
+  error = function(e){
+    message("Spell check did not work. Check that your dictionary is formatted correctly. You cannot have special characters (e.g., Diné) in the dictionary.txt file. You need to use HTML formatting (e.g., Din&eacute;) for these.")
+  }
+)
 
 # Print out how many spell check errors
 write(nrow(sp_errors), stdout())
