@@ -25,7 +25,7 @@ if (file.exists(ignore_urls_file)) {
   ignore_urls <- ""
 }
 
-# Only declare `.Rmd` files but not the ones in the style-sets directory
+# Only declare `.md` files but not the ones in the style-sets directory
 files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE)
 
 test_url <- function(url) {
@@ -59,11 +59,11 @@ get_urls <- function(file) {
   markdown_tag_bracket <- "\\[.*\\]: http[s]?"
   http_gen <- "http[s]?"
   url_pattern <- "[(|<]?http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-  
+
   # Other patterns
   nested_parens <- "\\((.*)\\((.*)\\)(.*)\\)"
   outermost_parens <- "^\\((.*)\\)(.*)$"
-  
+
   # Collect the different kinds of tags in a named vector
   all_tags <- c(html = html_tag,
                 knitr = include_url_tag,
@@ -84,16 +84,16 @@ get_urls <- function(file) {
   }
   url_list$knitr <- stringr::word(url_list$knitr, sep = "include_url\\(\"|\"\\)", 2)
   url_list$ottrpal <- stringr::word(url_list$ottrpal, sep = "include_slide\\(\"|\"\\)", 2)
-  
+
   # Check markdown for parentheticals outside of [ ]( )
   parens_index <- sapply(url_list$markdown, stringr::str_detect, nested_parens)
-  
+
   if (length(parens_index) >= 1) {
     # Break down to parenthetical only
     url_list$markdown[parens_index] <- stringr::str_extract(url_list$markdown[parens_index], nested_parens)
     # Remove parentheticals outside [ ]( )
     url_list$markdown[parens_index] <- stringr::word(stringr::str_replace(url_list$markdown[parens_index], outermost_parens, "\\1"), sep = "\\]", 2)
-  
+
     url_list$markdown[!parens_index] <- stringr::word(url_list$markdown[!parens_index], sep = "\\]", 2)
     url_list$markdown <- grep("http", url_list$markdown, value = TRUE)
   }
@@ -105,17 +105,17 @@ get_urls <- function(file) {
   # Remove parentheses only if they are on the outside
   url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, outermost_parens, "\\1"), sep = "\\]", 1)
   url_list$markdown <- stringr::word(stringr::str_replace(url_list$markdown, outermost_parens, "\\1"), sep = "\\]", 1)
-  
+
   # Remove `< >`
   url_list$other_http <- stringr::word(stringr::str_replace(url_list$other_http, "^<(.*)>(.*)$", "\\1"), sep = "\\]", 1)
-  
+
   # If after the manipulations there's not actually a URL, remove it.
   url_list <- lapply(url_list, na.omit)
 
   # collapse list
   urls <- unlist(url_list)
 
-  # Remove trailing characters 
+  # Remove trailing characters
   urls <- gsub("\\'\\:$|\\'|\\:$|\\.$", "", urls)
 
   if (length(urls) > 0 ){

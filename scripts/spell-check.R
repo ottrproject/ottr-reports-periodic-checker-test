@@ -31,7 +31,7 @@ dictionary <- readLines(dict_file)
 writeLines(unique(sort(dictionary)), dict_file)
 
 # Only declare `.Rmd` files but not the ones in the style-sets directory
-files <- list.files(pattern = 'Rmd$', recursive = TRUE, full.names = TRUE)
+files <- list.files(pattern = 'md$', recursive = TRUE, full.names = TRUE)
 
 # Get quiz file names
 quiz_files <- list.files(file.path(root_dir, "quizzes"), pattern = '\\.md$', full.names = TRUE)
