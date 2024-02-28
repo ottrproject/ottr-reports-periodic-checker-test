@@ -143,7 +143,7 @@ jobs:
         body: |
           :warning: ${{ steps.setup.outputs.error_name }} :warning:
           There are ${{ steps.setup.outputs.error_name }} that need to be addressed.
-          Click here :arrow_right: [for spelling errors!](${{ steps.file-path.outputs.error_url }}) :exclamation:
+          Click here :arrow_right: [for ${{ steps.setup.outputs.error_name }} errors!](${{ steps.file-path.outputs.error_url }}) :exclamation:
           Add errors that aren't errors to the [${{ steps.setup.outputs.ignore_file }}](${{ steps.file-path.outputs.link_to_ignore_file }}) file of this repo.
           If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
           _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
