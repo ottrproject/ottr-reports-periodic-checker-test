@@ -27,11 +27,24 @@ if (!dir.exists('check_reports')) {
 dict_file <- file.path(root_dir, 'resources', 'dictionary.txt')
 dictionary <- readLines(dict_file)
 
+# Declare exclude_files.txt
+exclude_file <- file.path(root_dir, 'resources', 'exclude_files.txt')
+
+# Read in exclude_files.txt if it exists
+if (file.exists(exclude_file)) {
+  exclude_file <- readLines(exclude_file)
+} else {
+  exclude_file <- ""
+}
+
 # Make it alphabetical and only unique entries
 writeLines(unique(sort(dictionary)), dict_file)
 
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(pattern = 'md$', recursive = TRUE, full.names = TRUE)
+
+# Exclude files lists in the exclude_file
+files <- setdiff(files, file.path(root_dir, exclude_file))
 
 # Get quiz file names
 quiz_files <- list.files(file.path(root_dir, "quizzes"), pattern = '\\.md$', full.names = TRUE)
