@@ -37,22 +37,10 @@ if (file.exists(exclude_file)) {
   exclude_file <- ""
 }
 
-# Make it alphabetical and only unique entries
-writeLines(unique(sort(dictionary)), dict_file)
-
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(pattern = 'md$', recursive = TRUE, full.names = TRUE)
 
-# Exclude files lists in the exclude_file
-files <- setdiff(files, file.path(root_dir, exclude_file))
-
-# Get quiz file names
-quiz_files <- list.files(file.path(root_dir, "quizzes"), pattern = '\\.md$', full.names = TRUE)
-
-# Put into one list
-files <- c(files, quiz_files)
-
-files <- grep("style-sets", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
+if( exclude_file[1] != "") files <- grep(paste0(exclude_file, collapse = "|"), files, invert = TRUE, value = TRUE)
 
 tryCatch(
   expr = {
