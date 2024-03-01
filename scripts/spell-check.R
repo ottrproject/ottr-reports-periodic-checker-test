@@ -52,14 +52,13 @@ quiz_files <- list.files(file.path(root_dir, "quizzes"), pattern = '\\.md$', ful
 # Put into one list
 files <- c(files, quiz_files)
 
-files <- grep("About.Rmd", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
 files <- grep("style-sets", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
-tryCatch( 
+tryCatch(
   expr = {
     # Run spell check
     sp_errors <- spelling::spell_check_files(files, ignore = dictionary)
-    
+
     if (nrow(sp_errors) > 0) {
       sp_errors <- sp_errors %>%
         data.frame() %>%
