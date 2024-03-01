@@ -18,6 +18,9 @@ if (!dir.exists('check_reports')) {
 # Declare ignore_urls file
 ignore_urls_file <- file.path(root_dir, 'resources', 'ignore-urls.txt')
 
+# Declare exclude_files.txt
+exclude_file <- file.path(root_dir, 'resources', 'exclude_files.txt')
+
 # Read in ignore urls file if it exists
 if (file.exists(ignore_urls_file)) {
   ignore_urls <- readLines(ignore_urls_file)
@@ -25,8 +28,17 @@ if (file.exists(ignore_urls_file)) {
   ignore_urls <- ""
 }
 
+# Read in ignore urls file if it exists
+if (file.exists(exclude_file)) {
+  exclude_file <- readLines(exclude_file)
+} else {
+  exclude_file <- ""
+}
+           
 # Only declare `.md` files but not the ones in the style-sets directory
-files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE)
+files <- list.files(path = root_dir, pattern = 'md$', full.names = TRUE, recursive = TRUE)
+
+if( exclude_file[1] != "") files <- grep(paste0(exclude_file, collapse = "|"), files, invert = TRUE, value = TRUE)
 
 test_url <- function(url) {
 

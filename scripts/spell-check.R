@@ -27,26 +27,26 @@ if (!dir.exists('check_reports')) {
 dict_file <- file.path(root_dir, 'resources', 'dictionary.txt')
 dictionary <- readLines(dict_file)
 
-# Make it alphabetical and only unique entries
-writeLines(unique(sort(dictionary)), dict_file)
+# Declare exclude_files.txt
+exclude_file <- file.path(root_dir, 'resources', 'exclude_files.txt')
+
+# Read in exclude_files.txt if it exists
+if (file.exists(exclude_file)) {
+  exclude_file <- readLines(exclude_file)
+} else {
+  exclude_file <- ""
+}
 
 # Only declare `.Rmd` files but not the ones in the style-sets directory
 files <- list.files(pattern = 'md$', recursive = TRUE, full.names = TRUE)
 
-# Get quiz file names
-quiz_files <- list.files(file.path(root_dir, "quizzes"), pattern = '\\.md$', full.names = TRUE)
+if( exclude_file[1] != "") files <- grep(paste0(exclude_file, collapse = "|"), files, invert = TRUE, value = TRUE)
 
-# Put into one list
-files <- c(files, quiz_files)
-
-files <- grep("About.Rmd", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
-files <- grep("style-sets", files, ignore.case = TRUE, invert = TRUE, value = TRUE)
-
-tryCatch( 
+tryCatch(
   expr = {
     # Run spell check
     sp_errors <- spelling::spell_check_files(files, ignore = dictionary)
-    
+
     if (nrow(sp_errors) > 0) {
       sp_errors <- sp_errors %>%
         data.frame() %>%
