@@ -30,13 +30,13 @@ jobs:
       id: setup
       run: |
         if ${{ contains(inputs.check_type, 'spelling') }} ;then
-          echo "error_name=spelling errors" >> $GITHUB_OUTPUT
+          echo "error_name=spelling" >> $GITHUB_OUTPUT
           echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'urls') }} ;then
           echo "error_name=broken urls" >> $GITHUB_OUTPUT
           echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
-          echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
+          echo "error_name=quiz formatting" >> $GITHUB_OUTPUT
         fi
 
     - name: Build components of the spell check comment
