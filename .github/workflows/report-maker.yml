@@ -20,10 +20,8 @@ on:
         type: string
         default: ${GITHUB_REF#refs/heads/}
 jobs:
-  error-check:
+  status-update:
     runs-on: ubuntu-latest
-    container:
-      image: jhudsl/base_ottr:main
 
     steps:
     - name: Declare report name
@@ -64,6 +62,41 @@ jobs:
           The check: ${{ steps.setup.outputs.error_name }} is currently being re-run :runner:
           _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
         edit-mode: replace
+
+  error-check:
+    runs-on: ubuntu-latest
+    container:
+      image: jhudsl/base_ottr:main
+
+    steps:
+    - name: Declare report name
+      id: setup
+      run: |
+        if ${{ contains(inputs.check_type, 'spelling') }} ;then
+          echo "error_name=spelling errors" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'urls') }} ;then
+          echo "error_name=broken urls" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
+          echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build components of the spell check comment
+      id: build-components
+      run: |
+        branch_name='preview-${{ github.event.pull_request.number }}'
+        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: ${{ steps.setup.outputs.error_name }}
 
     - name: Checkout
       uses: actions/checkout@v3
