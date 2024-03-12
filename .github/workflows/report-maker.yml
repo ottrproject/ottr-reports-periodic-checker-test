@@ -83,8 +83,8 @@ jobs:
       id: file-path
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${{ inputs.branch_name }}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
         echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${{ inputs.branch_name }}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
         echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
       shell: bash
 
