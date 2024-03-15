@@ -58,7 +58,7 @@ jobs:
         comment-id: ${{ steps.fc1.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          The check: ${{ steps.setup1.outputs.error_name }} is currently being re-run :runner:
+          The ${{ steps.setup1.outputs.error_name }} check is currently being re-run :runner:
           _Comment updated at ${{ steps.build-components1.outputs.time }} with changes from ${{ steps.build-components1.outputs.commit_id }}_
         edit-mode: replace
         
@@ -166,7 +166,7 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           :warning: ${{ steps.setup2.outputs.error_name }} :warning:
-          There are ${{ steps.setup2.outputs.error_name }} that need to be addressed.
+          There are ${{ steps.setup2.outputs.error_name }}s that need to be addressed.
           Click here :arrow_right: [for ${{ steps.setup2.outputs.error_name }}s!](${{ steps.file-path.outputs.error_url }}) :exclamation:
           Add errors that aren't errors to the [${{ steps.setup2.outputs.ignore_file }}](${{ steps.file-path.outputs.link_to_ignore_file }}) file of this repo.
           If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
