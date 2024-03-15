@@ -41,7 +41,7 @@ jobs:
       id: build-components
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
-        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
         echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
 
@@ -116,8 +116,8 @@ jobs:
       id: file-path
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
         echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${{ inputs.branch_name }}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
-        echo "time=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
       shell: bash
 
@@ -152,9 +152,9 @@ jobs:
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
 
-        git config --system --add safe.directory "$GITHUB_WORKSPACE"
-        git config --local user.email "itcrtrainingnetwork@gmail.com"
-        git config --local user.name "jhudsl-robot"
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
         git add ${{ steps.check_results.outputs.report_path }} --force || echo "No changes to commit"
         git commit -m 'Add check file' || echo "No changes to commit"
