@@ -20,6 +20,49 @@ on:
         type: string
         default: ${GITHUB_REF#refs/heads/}
 jobs:
+  status-update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Declare report name
+      id: setup
+      run: |
+        if ${{ contains(inputs.check_type, 'spelling') }} ;then
+          echo "error_name=spelling error" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'urls') }} ;then
+          echo "error_name=broken urls error" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
+          echo "error_name=quiz formatting error" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build components of the spell check comment
+      id: build-components1
+      run: |
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3
+      id: fc1
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: ${{ steps.setup.outputs.error_name }}
+
+    - name: Status update
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        comment-id: ${{ steps.fc1.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          The check: ${{ steps.setup.outputs.error_name }} is currently being re-run :runner:
+          _Comment updated at ${{ steps.build-components1.outputs.time }} with changes from ${{ steps.build-components1.outputs.commit_id }}_
+        edit-mode: replace
+
+jobs:
   error-check:
     runs-on: ubuntu-latest
     container:
@@ -30,40 +73,22 @@ jobs:
       id: setup
       run: |
         if ${{ contains(inputs.check_type, 'spelling') }} ;then
-          echo "error_name=spelling" >> $GITHUB_OUTPUT
+          echo "error_name=spelling error" >> $GITHUB_OUTPUT
           echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'urls') }} ;then
-          echo "error_name=broken urls" >> $GITHUB_OUTPUT
+          echo "error_name=broken urls error" >> $GITHUB_OUTPUT
           echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
         elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
-          echo "error_name=quiz formatting" >> $GITHUB_OUTPUT
+          echo "error_name=quiz formatting error" >> $GITHUB_OUTPUT
         fi
 
     - name: Build components of the spell check comment
-      id: build-components
+      id: build-components2
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
         echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
         echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
-
-    - name: Find Comment
-      uses: peter-evans/find-comment@v3
-      id: fc
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
-        body-includes: ${{ steps.setup.outputs.error_name }}
-
-    - name: Status update
-      uses: peter-evans/create-or-update-comment@v2
-      with:
-        comment-id: ${{ steps.fc.outputs.comment-id }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          The check: ${{ steps.setup.outputs.error_name }} is currently being re-run :runner:
-          _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
-        edit-mode: replace
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -105,7 +130,7 @@ jobs:
         body: |
           :warning: Check: ${{ steps.setup.outputs.error_name }} did not fully run! Go to the `Actions` tab to find more info.
           Post issue to https://github.com/jhudsl/OTTR_Template/issues if this seems incorrect.
-          _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
+          _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
         edit-mode: replace
 
     - name: Stop if failure
@@ -143,7 +168,7 @@ jobs:
         body: |
           :warning: ${{ steps.setup.outputs.error_name }} :warning:
           There are ${{ steps.setup.outputs.error_name }} that need to be addressed.
-          Click here :arrow_right: [for ${{ steps.setup.outputs.error_name }} errors!](${{ steps.file-path.outputs.error_url }}) :exclamation:
+          Click here :arrow_right: [for ${{ steps.setup.outputs.error_name }}s!](${{ steps.file-path.outputs.error_url }}) :exclamation:
           Add errors that aren't errors to the [${{ steps.setup.outputs.ignore_file }}](${{ steps.file-path.outputs.link_to_ignore_file }}) file of this repo.
           If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
           _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
@@ -169,6 +194,6 @@ jobs:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          No ${{ steps.setup.outputs.error_name }}! :tada:
+          No ${{ steps.setup.outputs.error_name }}s! :tada:
           _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
         edit-mode: replace
