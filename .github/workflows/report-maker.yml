@@ -193,6 +193,6 @@ jobs:
         comment-id: ${{ steps.fc2.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          No ${{ steps.setup.outputs.error_name }}! :tada:
+          No ${{ steps.setup2.outputs.error_name }}! :tada:
           _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
         edit-mode: replace
