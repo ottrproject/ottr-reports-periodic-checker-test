@@ -90,14 +90,6 @@ jobs:
         echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
 
-    - name: Find Comment
-      uses: peter-evans/find-comment@v2
-      id: fc
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
-        body-includes: ${{ steps.setup.outputs.error_name }}
-
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -127,7 +119,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: ${{ steps.setup.outputs.error_name }}
+        body-includes: The check: ${{ steps.setup.outputs.error_name }}
 
     - name: Say check is incomplete
       if: steps.check_results.outcome == 'failure'
