@@ -52,6 +52,8 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
         body-includes: ${{ steps.setup.outputs.error_name }}
+        direction: first
+        nth: 1
 
     - name: Status update
       uses: peter-evans/create-or-update-comment@v2
@@ -120,7 +122,9 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
         body-includes: 'The check: ${{ steps.setup.outputs.error_name }}'
-
+        direction: first
+        nth: 1
+        
     - name: Say check is incomplete
       if: steps.check_results.outcome == 'failure'
       uses: peter-evans/create-or-update-comment@v2
