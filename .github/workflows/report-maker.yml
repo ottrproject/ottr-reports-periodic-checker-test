@@ -61,8 +61,7 @@ jobs:
           The check: ${{ steps.setup.outputs.error_name }} is currently being re-run :runner:
           _Comment updated at ${{ steps.build-components1.outputs.time }} with changes from ${{ steps.build-components1.outputs.commit_id }}_
         edit-mode: replace
-
-jobs:
+        
   error-check:
     runs-on: ubuntu-latest
     container:
