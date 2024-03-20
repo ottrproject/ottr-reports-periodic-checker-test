@@ -2,6 +2,56 @@
 
 This action runs either spelling, url, or quiz format checks in an [OTTR course](https://github.com/jhudsl/OTTR_Template).
 
+
+## Inputs
+
+## `check_type`
+
+**Required** the type of check to be done. Either `spelling`, `urls`, or `quiz_format`.
+
+## `error_min`
+
+What number of errors should make this check fail? Default is `0`.
+
+## `gh_pat`
+
+You must pass a [Github Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) that has repository privileges that this action can use.
+
+## Outputs
+
+A report called one of the following:
+'check_reports/spell_check_results.tsv', 'check_reports/url_checks.csv', or 'check_reports/question_error_report.tsv',
+
+## Example usage
+
+For spelling checks:
+```
+uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+with:
+  check_type: spelling
+  error_min: 3
+  gh_pat: secrets.GH_PAT
+```
+
+For broken url checks:
+```
+uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+with:
+  check_type: urls
+  error_min: 0
+  gh_pat: secrets.GH_PAT
+```
+
+For quiz_format checks:
+```
+uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+with:
+  check_type: quiz_format
+  error_min: 0
+  gh_pat: secrets.GH_PAT
+```
+
+
 ## main.yml
 
 This GitHub Actions (GHA) workflow, "Testing ottr-reports", performs a series of checks on pull requests made to the main branch and can also be manually triggered using the workflow_dispatch event.
@@ -79,51 +129,3 @@ Steps:
 8. Based on the number of errors relative to error_min, different actions are taken. If there are too many errors, it fails the job; otherwise, it acknowledges the acceptable error count.
 9. Comments are made or updated on the pull request to reflect the outcome of the checks, providing feedback directly in the PR discussion.
 
-
-## Inputs
-
-## `check_type`
-
-**Required** the type of check to be done. Either `spelling`, `urls`, or `quiz_format`.
-
-## `error_min`
-
-What number of errors should make this check fail? Default is `0`.
-
-## `gh_pat`
-
-You must pass a [Github Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) that has repository privileges that this action can use.
-
-## Outputs
-
-A report called one of the following:
-'check_reports/spell_check_results.tsv', 'check_reports/url_checks.csv', or 'check_reports/question_error_report.tsv',
-
-## Example usage
-
-For spelling checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: spelling
-  error_min: 3
-  gh_pat: secrets.GH_PAT
-```
-
-For broken url checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: urls
-  error_min: 0
-  gh_pat: secrets.GH_PAT
-```
-
-For quiz_format checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: quiz_format
-  error_min: 0
-  gh_pat: secrets.GH_PAT
-```
