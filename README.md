@@ -12,9 +12,9 @@ It is composed of four jobs: `get_branch`, `spell-check`, `urls-check`, and `qui
 
 Purpose: Determines the branch name that triggered the workflow and makes it available for subsequent jobs.
 
-Steps:
-1. Executes a shell command to extract the branch name from GITHUB_REF environment variable
-2. Stores it in the GITHUB_OUTPUT for use in later steps.
+**Steps:**
+1. Executes a shell command to extract the branch name from `GITHUB_REF` environment variable
+2. Stores it in the `GITHUB_OUTPUT` for use in later steps.
 
 
 2. `spell-check` Job
