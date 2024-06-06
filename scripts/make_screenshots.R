@@ -9,7 +9,7 @@ if (!('optparse' %in% installed.packages())) {
   # install.packages("optparse", repos = "http://cran.us.r-project.org")
 }
 
-webshot::install_phantomjs()
+webshot::install_phantomjs(force = TRUE)
 
 library(optparse)
 library(magrittr)
