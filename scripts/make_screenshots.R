@@ -9,8 +9,6 @@ if (!('optparse' %in% installed.packages())) {
   # install.packages("optparse", repos = "http://cran.us.r-project.org")
 }
 
-webshot::install_phantomjs()
-
 library(optparse)
 library(magrittr)
 
@@ -59,9 +57,11 @@ chapt_df <- ottrpal::get_chapters(base_url = file.path(base_url, "no_toc/"))
 
 file_names <- lapply(chapt_df$url, function(url) {
   file_name <- gsub(".html", ".png", file.path(output_folder, basename(url)))
+  b <- chromote::ChromoteSession$new()
   # Get rid of special characters
-  webshot::webshot(url, file_name)
+  b$Page$navigate(url, file_name)
   file_name <- gsub(":|?|!|\\'", "", file_name)
+  b$screenshot(file_name)
   message(paste("Screenshot saved:", file_name))
   return(file_name)
 })
