@@ -61,20 +61,11 @@ chapt_df <- get_chapters(html_page = file.path(base_url, "no_toc/"))
 file_names <- lapply(chapt_df$url, function(url) {
   file_name <- gsub(".html", ".png", file.path(output_folder, basename(url)))
 
-  # Open a session
-  chrome_session <- chromote::ChromoteSession$new()
-
   # Get rid of special characters because leanpub no like
-  suppressWarnings(chrome_session$Page$navigate(url, "_", file_name))
   file_name <- gsub(":|?|!|\\'", "", file_name)
-
+  
   # Take the screenshot
-  chrome_session$screenshot(file.path(file_name))
-
-  message(paste("Screenshot saved:", file_name))
-
-  # Close it
-  chrome_session$close()
+  webshot2::webshot(url)
 
   return(file_name)
 
