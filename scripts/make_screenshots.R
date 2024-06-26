@@ -13,6 +13,8 @@ if (!('optparse' %in% installed.packages())) {
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 
+Sys.setenv("CHROMOTE_CHROME" = "/usr/bin/vivaldi")
+
 library(optparse)
 library(magrittr)
 
@@ -58,7 +60,7 @@ if (is.null(opt$base_url)) {
 }
 
 # Collect all the chapter pages for the url given
-chapt_df <- ottrpal::get_chapters(html_page =  file.path(root_dir, "docs", "index.html"), 
+chapt_df <- ottrpal::get_chapters(html_page =  file.path(root_dir, "docs", "index.html"),
                          base_url = base_url)
 
 # Now take screenshots for each
