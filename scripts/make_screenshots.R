@@ -54,21 +54,21 @@ if (is.null(opt$base_url)) {
 }
 
 # Collect all the chapter pages for the url given
-chapt_df <- get_chapters(html_page = file.path(base_url, "no_toc/"))
+chapt_df <- ottrpal::get_chapters(html_page = file.path(base_url, "no_toc/"))
 
 
 # Now take screenshots for each
 file_names <- lapply(chapt_df$url, function(url) {
   file_name <- gsub(".html", ".png", file.path(output_folder, basename(url)))
-
+  
   # Get rid of special characters because leanpub no like
   file_name <- gsub(":|?|!|\\'", "", file_name)
   
   # Take the screenshot
-  webshot2::webshot(url)
-
+  webshot2::webshot(url, file = file_name)
+  
   return(file_name)
-
+  
 })
 
 # Save file of chapter urls and file_names
