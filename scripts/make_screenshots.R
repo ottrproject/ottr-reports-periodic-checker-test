@@ -54,7 +54,7 @@ if (is.null(opt$base_url)) {
 }
 
 # Collect all the chapter pages for the url given
-chapt_df <- ottrpal::get_chapters(html_page = file.path(base_url, "no_toc/"))
+chapt_df <- ottrpal::get_chapters(html_page = file.path(base_url, "/no_toc/"))
 
 
 # Now take screenshots for each
