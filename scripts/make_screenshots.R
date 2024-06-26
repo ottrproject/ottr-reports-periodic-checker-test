@@ -58,7 +58,7 @@ if (is.null(opt$base_url)) {
 }
 
 # Collect all the chapter pages for the url given
-chapt_df <- ottrpal::get_chapters(html_page =  file.path(root_dir, "docs", "no_toc", "index.html"))
+chapt_df <- ottrpal::get_chapters(html_page =  file.path(root_dir, "docs", "index.html"))
 
 # Now take screenshots for each
 file_names <- lapply(chapt_df$url, function(url) {
