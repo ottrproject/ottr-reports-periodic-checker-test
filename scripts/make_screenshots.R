@@ -9,8 +9,6 @@ if (!('optparse' %in% installed.packages())) {
   # install.packages("optparse", repos = "http://cran.us.r-project.org")
 }
 
-webshot::install_phantomjs()
-
 library(optparse)
 library(magrittr)
 
@@ -55,15 +53,22 @@ if (is.null(opt$base_url)) {
   base_url <- gsub("/$", "", base_url)
 }
 
-chapt_df <- ottrpal::get_chapters(base_url = file.path(base_url, "no_toc/"))
+# Collect all the chapter pages for the url given
+chapt_df <- ottrpal::get_chapters(html_page = file.path(base_url, "no_toc/"))
 
+
+# Now take screenshots for each
 file_names <- lapply(chapt_df$url, function(url) {
   file_name <- gsub(".html", ".png", file.path(output_folder, basename(url)))
-  # Get rid of special characters
-  webshot::webshot(url, file_name)
+  
+  # Get rid of special characters because leanpub no like
   file_name <- gsub(":|?|!|\\'", "", file_name)
-  message(paste("Screenshot saved:", file_name))
+  
+  # Take the screenshot
+  webshot2::webshot(url, file = file_name)
+  
   return(file_name)
+  
 })
 
 # Save file of chapter urls and file_names
