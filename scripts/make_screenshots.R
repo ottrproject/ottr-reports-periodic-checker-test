@@ -58,7 +58,8 @@ if (is.null(opt$base_url)) {
 }
 
 # Collect all the chapter pages for the url given
-chapt_df <- ottrpal::get_chapters(html_page =  file.path(root_dir, "docs", "index.html"))
+chapt_df <- get_chapters(html_page =  file.path(root_dir, "docs", "index.html"), 
+                         base_url = base_url)
 
 # Now take screenshots for each
 file_names <- lapply(chapt_df$url, function(url) {
@@ -75,8 +76,10 @@ file_names <- lapply(chapt_df$url, function(url) {
 })
 
 # Save file of chapter urls and file_names
-chapt_df %>%
-  dplyr::mutate(img_path = unlist(file_names)) %>%
+chapt_df <- chapt_df %>%
+  dplyr::mutate(img_path = unlist(file_names)) 
+
+chapt_df %>% 
   readr::write_tsv(file.path(output_folder, "chapter_urls.tsv"))
 
 message(paste("Image Chapter key written to: ", file.path(output_folder, "chapter_urls.tsv")))
