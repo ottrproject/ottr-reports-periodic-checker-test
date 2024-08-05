@@ -25,7 +25,7 @@ if (!dir.exists('check_reports')) {
 
 # Read in dictionary
 dict_file <- file.path(root_dir, 'resources', 'dictionary.txt')
-dictionary <- readLines(dict_file)
+dictionary <- trimws(readLines(dict_file))
 
 # Declare exclude_files.txt
 exclude_file <- file.path(root_dir, 'resources', 'exclude_files.txt')
