@@ -113,7 +113,7 @@ jobs:
       shell: bash
 
     - name: Find Comment Again
-      uses: peter-evans/find-comment@v4
+      uses: peter-evans/find-comment@v3
       id: fc2
       with:
         issue-number: ${{ github.event.pull_request.number }}
