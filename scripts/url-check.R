@@ -134,7 +134,10 @@ get_urls <- function(file) {
   urls <- unlist(url_list)
 
   # Remove trailing characters
-  urls <- gsub("\\'\\:$|\\'|\\:$|\\.$", "", urls)
+  urls <- gsub("\\'\\:$|\\'|\\:$|\\.$|\\)$|\\,$", "", urls)
+  
+  # Remove URLs that are in the ignore 
+  if( ignore_urls[1] != "") urls <- grep(paste0(ignore_urls, collapse = "|"), urls, invert = TRUE, value = TRUE)
 
   if (length(urls) > 0 ){
     # Remove trailing characters
@@ -150,8 +153,7 @@ get_urls <- function(file) {
 all_urls <- lapply(files, get_urls)
 
 # Write the file
-all_urls_df <- dplyr::bind_rows(all_urls) %>%
-  dplyr::filter(!(urls %in% ignore_urls))
+all_urls_df <- dplyr::bind_rows(all_urls)
 
 if (nrow(all_urls_df) > 0) {
   all_urls_df <- all_urls_df %>%
