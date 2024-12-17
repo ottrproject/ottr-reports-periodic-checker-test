@@ -7,6 +7,10 @@ inputs:
     description: "There are three types of reports that can be done and specified: 'spelling', 'urls', or 'quiz_format'."
     required: true
     type: string
+  sort_dictionary:
+    description: "Should this action automatically alphabetize your dictionary.txt"
+    default: false
+    type: boolean
   error_min:
     description: "What number of errors should make this check fail?"
     default: 0
