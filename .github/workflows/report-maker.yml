@@ -13,15 +13,16 @@ on:
       error_min:
         default: 0
         type: number
+      gh_pat:
+        type: string
+        required: true
       sort_dictionary:
         default: false
         type: boolean
       branch_name:
         type: string
         default: ${GITHUB_REF#refs/heads/}
-    secrets:
-      gh_pat:
-        required: true
+      
 jobs:
   status-update:
     runs-on: ubuntu-latest
