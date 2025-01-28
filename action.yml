@@ -25,11 +25,180 @@ outputs:
     description: "How many errors were found."
 
 runs:
-  using: 'docker'
-  image: 'docker://jhudsl/ottr-reports'
-  args:
-    - ${{ inputs.check_type }}
-    - ${{ inputs.error_min }}
+  using: "composite"
+    steps:
+    - name: Declare report name
+      id: setup1
+      run: |
+        if ${{ contains(inputs.check_type, 'spelling') }} ;then
+          echo "error_name=spelling errors" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'urls') }} ;then
+          echo "error_name=broken url errors" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
+          echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build components of the spell check comment
+      id: build-components1
+      run: |
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3
+      id: fc1
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: ${{ steps.setup1.outputs.error_name }}
+
+    - name: Status update
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc1.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          The ${{ steps.setup1.outputs.error_name }} check is currently being re-run :runner:
+          _Comment updated at ${{ steps.build-components1.outputs.time }} with changes from ${{ steps.build-components1.outputs.commit_id }}_
+        edit-mode: replace
+
+  error-check:
+    runs-on: ubuntu-latest
+    container:
+      image: jhudsl/base_ottr:main
+
+    steps:
+    - name: Declare report name
+      id: setup2
+      run: |
+        if ${{ contains(inputs.check_type, 'spelling') }} ;then
+          echo "error_name=spelling errors" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/dictionary.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'urls') }} ;then
+          echo "error_name=broken url errors" >> $GITHUB_OUTPUT
+          echo "ignore_file=resources/ignore-urls.txt" >> $GITHUB_OUTPUT
+        elif ${{ contains(inputs.check_type, 'quiz_format') }} ;then
+          echo "error_name=quiz formatting errors" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build components of the spell check comment
+      id: build-components2
+      run: |
+        branch_name='preview-${{ github.event.pull_request.number }}'
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: 'preview-${{ github.event.pull_request.number }}'
+
+    - name: Run the check
+      id: check_results
+      uses: 'docker://jhudsl/ottr-reports'
+      continue-on-error: true
+      with:
+        check_type: ${{ inputs.check_type }}
+        error_min: ${{ inputs.error_min }}
+
+    - name: Declare file path and time
+      id: file-path
+      run: |
+        branch_name='preview-${{ github.event.pull_request.number }}'
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${{ inputs.branch_name }}/${{ steps.setup.outputs.ignore_file }}" >> $GITHUB_OUTPUT
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "error_url=https://github.com/${GITHUB_REPOSITORY}/blob/$branch_name/${{ steps.check_results.outputs.report_path }}" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Find Comment Again
+      uses: peter-evans/find-comment@v3
+      id: fc2
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: ${{ steps.setup2.outputs.error_name }}
+
+    - name: Say check is incomplete
+      if: steps.check_results.outcome == 'failure'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc2.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :warning: Check: ${{ steps.setup2.outputs.error_name }} did not fully run! Go to the `Actions` tab to find more info.
+          Post issue to https://github.com/jhudsl/OTTR_Template/issues if this seems incorrect.
+          _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
+        edit-mode: replace
+
+    - name: Stop if failure
+      if: steps.check_results.outcome == 'failure'
+      run: exit 1
+
+############################# Handle commenting ################################
+
+    - name: Commit check files to branch
+      id: commit
+      run: |
+        branch_name='preview-${{ github.event.pull_request.number }}'
+
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+        git add ${{ steps.check_results.outputs.report_path }} --force || echo "No changes to commit"
+        git commit -m 'Add check file' || echo "No changes to commit"
+        git pull --rebase --set-upstream origin $branch_name --allow-unrelated-histories --strategy-option=ours
+        git merge origin/${{ github.head_ref }} --allow-unrelated-histories --strategy-option ours
+        git push origin $branch_name --force || echo "No changes to commit"
+
+        error_num=$(cat ${{ steps.check_results.outputs.report_path }} | wc -l)
+        error_num="$((error_num-1))"
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: There are errors!
+      if: ${{ steps.commit.outputs.error_num > inputs.error_min }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc2.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :warning: ${{ steps.setup2.outputs.error_name }} :warning:
+          There are ${{ steps.setup2.outputs.error_name }} that need to be addressed.
+          Click here :arrow_right: [for ${{ steps.setup2.outputs.error_name }}!](${{ steps.file-path.outputs.error_url }}) :exclamation:
+          Add errors that aren't errors to the [${{ steps.setup2.outputs.ignore_file }}](${{ steps.file-path.outputs.link_to_ignore_file }}) file of this repo.
+          If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
+          _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
+        edit-mode: replace
+
+    - name: Fail if too many errors
+      if: ${{ steps.commit.outputs.error_num > inputs.error_min }}
+      run: |
+        echo ${{ steps.commit.outputs.error_num }}
+        exit 1
+      shell: bash
+
+    - name: Don't fail if not too many errors
+      if: ${{ steps.commit.outputs.error_num <= inputs.error_min }}
+      run: |
+        echo ${{ steps.commit.outputs.error_num }}
+      shell: bash
+
+    - name: No errors comment
+      if: ${{ steps.commit.outputs.error_num <= inputs.error_min }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc2.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          No ${{ steps.setup2.outputs.error_name }}! :tada:
+          _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
+        edit-mode: replace
 
 branding:
   icon: "briefcase"
