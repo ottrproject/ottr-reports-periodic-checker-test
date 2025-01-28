@@ -13,6 +13,7 @@ script_directory="$(perl -e 'use File::Basename;
 
 printf "Running from: $script_directory \n"
 
+
 echo $INPUT_CHECK_TYPE >> check_type.txt
 
 if [ "${INPUT_CHECK_TYPE}" == "spelling" ];then
