@@ -32,7 +32,7 @@ outputs:
 
 runs:
   using: "composite"
-    steps:
+  steps:
     - name: Declare report name
       id: setup1
       run: |
