@@ -77,7 +77,19 @@ runs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-        ref: 'preview-${{ github.event.pull_request.number }}'
+
+    # Make the branch fresh
+    - name: Make the branch fresh
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+        branch_name='preview-${{ github.event.pull_request.number }}'
+        echo branch doesnt exist
+        git checkout -b $branch_name || echo branch exists
+        git push --set-upstream origin $branch_name || echo branch exists remotely
+      shell: bash
 
     - name: Run the check
       id: check_results
