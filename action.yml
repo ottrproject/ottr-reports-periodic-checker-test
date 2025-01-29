@@ -100,7 +100,8 @@ runs:
         Rscript -e "install.packages('remotes', repos='http://cran.us.r-project.org')"
         Rscript -e "remotes::install_github('jhudsl/ottrpal')"
         Rscript -e "ottrpal::check(check_type == ${{inputs.check_type}} )"
-
+      shell: bash
+      
     - name: Declare file path and time
       id: file-path
       run: |
