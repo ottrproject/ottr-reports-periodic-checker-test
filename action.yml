@@ -93,13 +93,10 @@ runs:
 
     - name: Run the check
       id: check_results
-      run: |
-        apt install r-base r-base-dev -y
-        sudo apt update
-        Rscript -e "install.packages('remotes', repos='http://cran.us.r-project.org')"
-        Rscript -e "remotes::install_github('jhudsl/ottrpal')"
-        Rscript -e "ottrpal::check(check_type == ${{inputs.check_type}} )"
-      shell: bash
+      uses: 'docker://jhudsl/base_ottr:dev'
+      continue-on-error: true
+      with:
+        entrypoint: Rscript -e "ottrpal::check(check_type == ${{inputs.check_type}} )"
 
     - name: Declare file path and time
       id: file-path
