@@ -19,7 +19,7 @@ inputs:
     type: string
     default: ${GITHUB_REF#refs/heads/}
   gh_pat:
-    default: ${ secrets.GH_PAT }
+    default: ${{ secrets.GH_PAT }}
     required: true
 
 outputs:
@@ -101,7 +101,7 @@ runs:
         Rscript -e "remotes::install_github('jhudsl/ottrpal')"
         Rscript -e "ottrpal::check(check_type == ${{inputs.check_type}} )"
       shell: bash
-      
+
     - name: Declare file path and time
       id: file-path
       run: |

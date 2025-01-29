@@ -8,13 +8,6 @@ on:
 
 jobs:
 
-  get_branch:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Branch used
-      id: extract_branch
-      run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-
   spell-check:
     needs: get_branch
     runs-on: ubuntu-latest
@@ -28,7 +21,6 @@ jobs:
       with:
         check_type: spelling
         error_min: 3
-        branch_name: ${{ steps.extract_branch.outputs.branch }}
 
     - name: Find outputs
       run: |
@@ -49,7 +41,6 @@ jobs:
       with:
         check_type: urls
         error_min: 0
-        branch_name: ${{ steps.extract_branch.outputs.branch }}
 
     - name: Find outputs
       run: |
@@ -70,7 +61,6 @@ jobs:
       with:
         check_type: quiz_format
         error_min: 0
-        branch_name: ${{ steps.extract_branch.outputs.branch }}
 
     - name: Find outputs
       run: |
