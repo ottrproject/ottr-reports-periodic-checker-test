@@ -20,7 +20,8 @@ jobs:
       with:
         check_type: spelling
         error_min: 3
-
+        token: ${{ secrets.GH_PAT }}
+        
     - name: Find outputs
       run: |
         echo ${{ steps.check_spelling.outputs.report_path }}
@@ -40,6 +41,7 @@ jobs:
       with:
         check_type: urls
         error_min: 0
+        token: ${{ secrets.GH_PAT }}
 
     - name: Find outputs
       run: |
@@ -60,6 +62,7 @@ jobs:
       with:
         check_type: quiz_format
         error_min: 0
+        token: ${{ secrets.GH_PAT }}
 
     - name: Find outputs
       run: |
