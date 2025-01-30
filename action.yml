@@ -96,7 +96,6 @@ runs:
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
 
-        ls ./check_reports
         ls
         ls check_reports
       shell: bash
