@@ -93,9 +93,25 @@ runs:
 
     - name: Run the check
       id: check_results
-      run: docker run -v $PWD:/home -d jhudsl/ottrpal:dev "spelling" "/home"
+      run: |
+        docker run -v $PWD:/home -d jhudsl/ottrpal:dev "spelling" "/home"
+
+        if [ ${{ input.check_type }} == "spelling" ];then
+          error_name='spelling errors'
+          report_path=check_reports/spell_check_results.tsv
+        elif [ ${{ input.check_type }} == "urls" ];then
+          error_name='broken URLs'
+          report_path=check_reports/url_checks.tsv
+        elif [ ${{ input.check_type }} == "quiz_format" ];then
+          error_name='quiz format errors'
+          report_path=check_reports/question_error_report.tsv
+        fi
+
+        # Save output
+        echo "error_name=$error_name" >> $GITHUB_OUTPUT
+        echo "report_path=$report_path" >> $GITHUB_OUTPUT
       shell: bash
-      
+
     - name: Declare file path and time
       id: file-path
       run: |
