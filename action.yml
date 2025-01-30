@@ -78,7 +78,7 @@ runs:
     - name: Run the check
       id: check_results
       run: |
-        docker run -v $PWD:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home"
+        docker run -v ${{ github.workspace }}:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home"
 
         if [ ${{ inputs.check_type }} == "spelling" ];then
           error_name='spelling errors'
