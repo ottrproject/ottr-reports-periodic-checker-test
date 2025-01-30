@@ -96,7 +96,7 @@ runs:
       uses: 'docker://jhudsl/base_ottr:dev'
       continue-on-error: true
       with:
-        entrypoint: -v $PWD:/home -d jhudsl/ottrpal:dev "spelling" "/home"
+        args: "spelling" "/home"
 
     - name: Declare file path and time
       id: file-path
