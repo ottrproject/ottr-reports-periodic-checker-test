@@ -99,7 +99,7 @@ runs:
 
     - name: Upload Artifact
       id: upload
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.6
       with:
         name: ${{ steps.check_results.outputs.error_name }}
         path: ${{ steps.check_results.outputs.report_path }}
