@@ -76,17 +76,17 @@ runs:
         token: ${{ inputs.token }}
 
       # Set up git checkout
-      - name: Set up git checkout
-        run: |
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    - name: Set up git checkout
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-          branch_name='preview-${{ github.event.pull_request.number }}'
-          git fetch --all
-          git checkout $branch_name
-          git merge -s recursive --strategy-option=theirs origin/${{ github.head_ref }} --allow-unrelated-histories
-        shell: bash
+        branch_name='preview-${{ github.event.pull_request.number }}'
+        git fetch --all
+        git checkout $branch_name
+        git merge -s recursive --strategy-option=theirs origin/${{ github.head_ref }} --allow-unrelated-histories
+      shell: bash
 
     - name: Run the check
       id: check_results
