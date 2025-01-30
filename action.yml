@@ -94,7 +94,8 @@ runs:
     - name: Run the check
       id: check_results
       run: docker run -v $PWD:/home -d jhudsl/ottrpal:dev "spelling" "/home"
-
+      shell: bash
+      
     - name: Declare file path and time
       id: file-path
       run: |
