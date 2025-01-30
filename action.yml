@@ -96,10 +96,9 @@ runs:
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
 
-        chown -R runner:runner $report_path
-
         ls ./check_reports
         ls
+        ls check_reports
       shell: bash
 
     - name: Upload Artifact
