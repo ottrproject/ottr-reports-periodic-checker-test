@@ -15,9 +15,6 @@ inputs:
     description: "What number of errors should make this check fail?"
     default: 0
     type: number
-  branch_name:
-    type: string
-    default: ${GITHUB_REF#refs/heads/}
   token:
     required: true
 
@@ -78,18 +75,18 @@ runs:
         fetch-depth: 0
         token: ${{ inputs.token }}
 
-    # Make the branch fresh
-    - name: Make the branch fresh
-      run: |
-        git config --global --add safe.directory $GITHUB_WORKSPACE
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      # Set up git checkout
+      - name: Set up git checkout
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-        branch_name='preview-${{ github.event.pull_request.number }}'
-        echo branch doesnt exist
-        git checkout -b $branch_name || echo branch exists
-        git push --set-upstream origin $branch_name || echo branch exists remotely
-      shell: bash
+          branch_name='preview-${{ github.event.pull_request.number }}'
+          git fetch --all
+          git checkout $branch_name
+          git merge -s recursive --strategy-option=theirs origin/${{ github.head_ref }} --allow-unrelated-histories
+        shell: bash
 
     - name: Run the check
       id: check_results
@@ -111,6 +108,8 @@ runs:
         echo "error_name=$error_name" >> $GITHUB_OUTPUT
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
+
+        git status
       shell: bash
 
     - name: Declare file path and time
@@ -153,15 +152,10 @@ runs:
       run: |
         branch_name='preview-${{ github.event.pull_request.number }}'
 
-        git config --global --add safe.directory $GITHUB_WORKSPACE
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
         git add ${{ steps.check_results.outputs.report_path }} --force || echo "No changes to commit"
-        git commit -m 'Add check file' || echo "No changes to commit"
+        git commit -m 'Check file' || echo "No changes to commit"
         git pull --rebase --set-upstream origin $branch_name --allow-unrelated-histories --strategy-option=ours
-        git merge origin/${{ github.head_ref }} --allow-unrelated-histories --strategy-option ours
-        git push origin $branch_name --force || echo "No changes to commit"
+        git push --force || echo "No changes to commit"
 
         error_num=$(cat ${{ steps.check_results.outputs.report_path }} | wc -l)
         error_num="$((error_num-1))"
