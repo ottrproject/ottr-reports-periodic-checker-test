@@ -93,10 +93,7 @@ runs:
 
     - name: Run the check
       id: check_results
-      uses: 'docker://jhudsl/base_ottr:dev'
-      continue-on-error: true
-      with:
-        args: "spelling" "/home"
+      run: docker run -v $PWD:/home -d jhudsl/ottrpal:dev "spelling" "/home"
 
     - name: Declare file path and time
       id: file-path
