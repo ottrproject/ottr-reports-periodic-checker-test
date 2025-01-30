@@ -94,7 +94,7 @@ runs:
     - name: Run the check
       id: check_results
       run: |
-        docker run -v $PWD:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home"
+        chk_results=$(docker run -v $PWD:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home")
 
         if [ ${{ inputs.check_type }} == "spelling" ];then
           error_name='spelling errors'
@@ -110,6 +110,7 @@ runs:
         # Save output
         echo "error_name=$error_name" >> $GITHUB_OUTPUT
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
+        echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Declare file path and time
