@@ -84,9 +84,6 @@ runs:
           ${{ inputs.check_type }} "/home" && \
           echo "Container exited successfully" || echo "Container failed"
 
-        # check if we have permissions
-        ls -la /home
-
         if [ ${{ inputs.check_type }} == "spelling" ];then
           error_name='spelling errors'
           report_path=${{ github.workspace }}/check_reports/spell_check_results.tsv
@@ -102,8 +99,6 @@ runs:
         echo "error_name=$error_name" >> $GITHUB_OUTPUT
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
-
-        ls ${{ github.workspace }}
       shell: bash
 
     - name: Upload Artifact
