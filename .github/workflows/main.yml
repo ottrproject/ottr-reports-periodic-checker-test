@@ -4,7 +4,7 @@ name: Testing ottr-reports
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
 
@@ -21,7 +21,7 @@ jobs:
         check_type: spelling
         error_min: 3
         token: ${{ secrets.GH_PAT }}
-        
+
     - name: Find outputs
       run: |
         echo ${{ steps.check_spelling.outputs.report_path }}
