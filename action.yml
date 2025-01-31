@@ -78,17 +78,18 @@ runs:
     - name: Run the check
       id: check_results
       run: |
-        docker run -v ${{ github.workspace }}:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home"
+        mv ${{ github.workspace }} ${{ runner.temp }}
+        docker run -v ${{ runner.temp }}:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }} "/home"
 
         if [ ${{ inputs.check_type }} == "spelling" ];then
           error_name='spelling errors'
-          report_path=check_reports/spell_check_results.tsv
+          report_path=${{ runner.temp }}/check_reports/spell_check_results.tsv
         elif [ ${{ inputs.check_type }} == "urls" ];then
           error_name='broken URLs'
-          report_path=check_reports/url_checks.tsv
+          report_path=${{ runner.temp }}/check_reports/url_checks.tsv
         elif [ ${{ inputs.check_type }} == "quiz_format" ];then
           error_name='quiz format errors'
-          report_path=check_reports/question_error_report.tsv
+          report_path=${{ runner.temp }}/check_reports/question_error_report.tsv
         fi
 
         # Save output
