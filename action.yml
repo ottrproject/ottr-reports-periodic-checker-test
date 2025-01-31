@@ -80,8 +80,8 @@ runs:
       run: |
         docker run -v ${{ github.workspace }}:/home \
           --workdir=/home \
-          jhudsl/ottrpal:dev
-          ${{ inputs.check_type }} "/home" &&
+          jhudsl/ottrpal:dev \
+          ${{ inputs.check_type }} "/home" && \
           echo "Container exited successfully" || echo "Container failed"
 
         # check if we have permissions
