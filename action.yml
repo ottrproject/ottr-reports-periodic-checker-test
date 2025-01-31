@@ -78,18 +78,24 @@ runs:
     - name: Run the check
       id: check_results
       run: |
-        mv ${{ github.workspace }} ${{ runner.temp }}/repo
-        docker run -v ${{ runner.temp }}/repo:/home -d jhudsl/ottrpal:dev ${{ inputs.check_type }}/repo "/home"
+        docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
+          jhudsl/ottrpal:dev
+          ${{ inputs.check_type }} "/home" &&
+          echo "Container exited successfully" || echo "Container failed"
+
+        # check if we have permissions
+        ls -la /home
 
         if [ ${{ inputs.check_type }} == "spelling" ];then
           error_name='spelling errors'
-          report_path=${{ runner.temp }}/check_reports/spell_check_results.tsv
+          report_path=${{ github.workspace }}/check_reports/spell_check_results.tsv
         elif [ ${{ inputs.check_type }} == "urls" ];then
           error_name='broken URLs'
-          report_path=${{ runner.temp }}/check_reports/url_checks.tsv
+          report_path=${{ github.workspace }}/check_reports/url_checks.tsv
         elif [ ${{ inputs.check_type }} == "quiz_format" ];then
           error_name='quiz format errors'
-          report_path=${{ runner.temp }}/check_reports/question_error_report.tsv
+          report_path=${{ github.workspace }}/check_reports/question_error_report.tsv
         fi
 
         # Save output
@@ -97,8 +103,7 @@ runs:
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
 
-        ls ${{ runner.temp }}
-        ls ${{ runner.temp }}/repo
+        ls ${{ github.workspace }}
       shell: bash
 
     - name: Upload Artifact
