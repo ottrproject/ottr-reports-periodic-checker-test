@@ -46,14 +46,14 @@ runs:
     - name: Build components of the spell check comment
       id: build-components
       run: |
-        branch_name='preview-${{ github.event.pull_request.number }}'
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${GITHUB_REF_NAME}/${{ steps.setup.ignore_file }}" >> $GITHUB_OUTPUT
         echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
         echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Find Comment
       uses: peter-evans/find-comment@v3
-      id: fc1
+      id: find-comment
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
@@ -62,7 +62,7 @@ runs:
     - name: Status update
       uses: peter-evans/create-or-update-comment@v4
       with:
-        comment-id: ${{ steps.fc1.outputs.comment-id }}
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           The ${{ steps.setup.outputs.error_name }} check is currently being re-run :runner:
@@ -99,6 +99,9 @@ runs:
         echo "error_name=$error_name" >> $GITHUB_OUTPUT
         echo "report_path=$report_path" >> $GITHUB_OUTPUT
         echo "chk_results=$chk_results" >> $GITHUB_OUTPUT
+        error_num=$(cat $report_path | wc -l)
+        error_num="$((error_num-1))"
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Upload Artifact
@@ -108,6 +111,63 @@ runs:
         name: ${{ steps.check_results.outputs.error_name }}
         path: ${{ steps.check_results.outputs.report_path }}
         if-no-files-found: error
+
+    - name: Say check is incomplete
+      if: steps.check_results.outcome == 'failure' || steps.upload.outcome == 'failure'
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :warning: Check: ${{ steps.setup.outputs.error_name }} did not fully run! Go to the `Actions` tab to find more info.
+          Post issue to https://github.com/jhudsl/OTTR_Template/issues if this seems incorrect.
+          _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
+        edit-mode: replace
+
+    - name: Stop if failure
+      #I don't love repeating this condition a second time here
+      if: steps.check_results.outcome == 'failure' || steps.upload.outcome == 'failure'
+      run: exit 1
+      shell: bash
+
+    - name: There are errors!
+      if: ${{ steps.check_results.outputs.error_num > inputs.error_min }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          :warning: ${{ steps.setup.outputs.error_name }} :warning:
+          There are ${{ steps.setup.outputs.error_name }} that need to be addressed.
+          Click here :arrow_right: [for ${{ steps.setup.outputs.error_name }}!](${{ steps.upload.outputs.artifact-url }}) :exclamation:
+          Add errors that aren't errors to the [${{ steps.setup.outputs.ignore_file }}](${{ steps.build-components.outputs.link_to_ignore_file }}) file of this repo.
+          If you are having troubles see [this guide](https://www.ottrproject.org/faqs.html#Most_Common_Errors)
+          _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
+        edit-mode: replace
+
+    - name: Fail if too many errors
+      if: ${{ steps.check_results.outputs.error_num > inputs.error_min }}
+      run: |
+        echo ${{ steps.check_results.outputs.error_num }}
+        exit 1
+      shell: bash
+
+    - name: Don't fail if not too many errors
+      if: ${{ steps.check_results.outputs.error_num <= inputs.error_min }}
+      run: |
+        echo ${{ steps.check_results.outputs.error_num }}
+      shell: bash
+
+    - name: No errors comment
+      if: ${{ steps.check_results.outputs.error_num <= inputs.error_min }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          No ${{ steps.setup.outputs.error_name }}! :tada:
+          _Comment updated at ${{ steps.build-components.outputs.time }} with changes from ${{ steps.build-components.outputs.commit_id }}_
+        edit-mode: replace
 
 branding:
   icon: "briefcase"
