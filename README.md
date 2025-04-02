@@ -1,6 +1,6 @@
 # OTTR Reports
 
-This action runs either spelling, url, or quiz format checks in an [OTTR course](https://github.com/jhudsl/OTTR_Template).
+This action runs either spelling, url, or quiz format checks in an [OTTR course](https://github.com/ottrproject/OTTR_Template).
 
 
 ## Inputs
@@ -26,7 +26,7 @@ A report called one of the following:
 
 For spelling checks:
 ```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+uses: ottrproject/ottr-reports/.github/workflows/report-maker.yml@main
 with:
   check_type: spelling
   error_min: 3
@@ -35,7 +35,7 @@ with:
 
 For broken url checks:
 ```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+uses: ottrproject/ottr-reports/.github/workflows/report-maker.yml@main
 with:
   check_type: urls
   error_min: 0
@@ -44,7 +44,7 @@ with:
 
 For quiz_format checks:
 ```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
+uses: ottrproject/ottr-reports/.github/workflows/report-maker.yml@main
 with:
   check_type: quiz_format
   error_min: 0
@@ -120,7 +120,7 @@ Similar initial steps as `status-update` job to declare error names based on che
 
 Steps:
 1. Checks out the code from a branch named `preview-${{ github.event.pull_request.number }}`
-2. Executes the actual check using a custom action `jhudsl/ottr-reports@main`
+2. Executes the actual check using a custom action `ottrproject/ottr-reports@main`
 3. Captures additional details such as the link to the ignore file and the URL for the error report.
 4. Uses an external action (`peter-evans/find-comment@v3`) to find an existing comment by github-actions[bot] that includes the specified error name.
 5. If check failed, a comment is made or updated to indicate the check did not fully run. 

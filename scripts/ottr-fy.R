@@ -26,7 +26,7 @@ opt <- optparse::parse_args(opt_parser)
 # Find .git root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-base_url <- "https://raw.githubusercontent.com/jhudsl/OTTR_Template/main/"
+base_url <- "https://raw.githubusercontent.com/ottrproject/OTTR_Template/main/"
 
 needed_files <- c(
   ".github/workflows/pull_request.yml",

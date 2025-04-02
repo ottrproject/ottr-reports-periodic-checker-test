@@ -99,7 +99,7 @@ jobs:
         ref: 'preview-${{ github.event.pull_request.number }}'
 
     - name: Run the check
-      uses: jhudsl/ottr-reports@main
+      uses: ottrproject/ottr-reports@main
       id: check_results
       continue-on-error: true
       with:
@@ -131,7 +131,7 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           :warning: Check: ${{ steps.setup2.outputs.error_name }} did not fully run! Go to the `Actions` tab to find more info.
-          Post issue to https://github.com/jhudsl/OTTR_Template/issues if this seems incorrect.
+          Post issue to https://github.com/ottrproject/OTTR_Template/issues if this seems incorrect.
           _Comment updated at ${{ steps.build-components2.outputs.time }} with changes from ${{ steps.build-components2.outputs.commit_id }}_
         edit-mode: replace
 
