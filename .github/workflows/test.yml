@@ -1,0 +1,28 @@
+# Candace Savonen Apr 2025
+
+name: Testing ottr-reports
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  ottr-reports:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Actions Repository
+      uses: actions/checkout@v4
+
+    - name: Run Reports
+      id: run-reports
+      uses: ./ottr-reports
+      with:
+        token: ${{ secrets.GH_PAT }}
+        check_spelling: TRUE
+        spelling_error_min: 1
+        check_urls: TRUE
+        url_error_min: 1
+        check_quiz_form: TRUE
+        quiz_error_min: 1
+        branch_name: ${GITHUB_HEAD_REF}
+        sort_dictionary: true
