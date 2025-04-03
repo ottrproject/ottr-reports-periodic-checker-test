@@ -68,8 +68,8 @@ runs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: "OTTR Check Results"
-        token: ${{ inputs.gh_pat }}
+        body-includes: "# OTTR Check Results"
+        token: ${ GITHUB_TOKEN }
 
     # Post initial status
     - name: Post initial status
@@ -84,7 +84,7 @@ runs:
 
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
-        token: ${{ inputs.gh_pat }}
+        token: ${ GITHUB_TOKEN }
 
     # Spelling Check
     - name: Run spelling check
@@ -231,7 +231,7 @@ runs:
 
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
-        token: ${{ inputs.gh_pat }}
+        token: ${ GITHUB_TOKEN }
 
     # Final exit if any checks failed
     - name: Check for failures
