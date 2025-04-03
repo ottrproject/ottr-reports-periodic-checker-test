@@ -1,131 +1,55 @@
 # OTTR Reports
 
-This action runs either spelling, url, or quiz format checks in an [OTTR course](https://github.com/jhudsl/OTTR_Template).
+This action runs either spelling, url, or quiz format checks for markdown, R markdown, and Quarto courses and websites and returns reports about the errors it finds on your pull request.
+
+## Example usage
+
+
+```
+runs-on: ubuntu-latest
+permissions:
+  pull-requests: write
+
+
+steps:
+- name: Checkout Actions Repository
+  uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+
+- name: Run Reports
+  id: run-reports
+  uses: ottrproject/ottr-reports@main
+  with:
+    check_spelling: TRUE
+    spelling_error_min: 1
+    check_urls: TRUE
+    url_error_min: 1
+    check_quiz_form: TRUE
+    quiz_error_min: 1
+    sort_dictionary: TRUE
+```
 
 
 ## Inputs
 
-## `check_type`
+## `check_spelling`, `check_urls`, and `check_quiz_form`
 
-**Required** the type of check to be done. Either `spelling`, `urls`, or `quiz_format`.
+Are TRUE/FALSE variables would you like these checks to be run
 
-## `error_min`
+## `spelling_error_min`, `url_error_min`, and `quiz_error_min`
 
-What number of errors should make this check fail? Default is `0`.
-
-## `gh_pat`
-
-You must pass a [Github Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) that has repository privileges that this action can use.
+For each test respectively how many minimum errors would you like to tolerate?
+In other words, what number of errors should make this check fail? Default is `0`.
 
 ## Outputs
 
-A report called one of the following:
-'check_reports/spell_check_results.tsv', 'check_reports/url_checks.csv', or 'check_reports/question_error_report.tsv',
-
-## Example usage
-
-For spelling checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: spelling
-  error_min: 3
-  gh_pat: secrets.GH_PAT
-```
-
-For broken url checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: urls
-  error_min: 0
-  gh_pat: secrets.GH_PAT
-```
-
-For quiz_format checks:
-```
-uses: jhudsl/ottr-reports/.github/workflows/report-maker.yml@main
-with:
-  check_type: quiz_format
-  error_min: 0
-  gh_pat: secrets.GH_PAT
-```
+A comment on your pull request with a summary of your checsk and a zip file with the respective reports :
+'spell_check_results.tsv', 'url_checks.csv', or question_error_report.tsv',
 
 
-## main.yml
+## How does it work?
 
-This GitHub Actions (GHA) workflow, "Testing ottr-reports", performs a series of checks on pull requests made to the main branch and can also be manually triggered using the workflow_dispatch event.
+All checks are run by the `jhudsl/ottrpal` docker image which contains the `ottrpal` R package.
 
-It is composed of four jobs: `get_branch`, `spell-check`, `urls-check`, and `quiz-format`:
-
-1. `get_branch` Job
-
-Purpose: Determines the branch name that triggered the workflow and makes it available for subsequent jobs.
-
-**Steps:**
-1. Executes a shell command to extract the branch name from `GITHUB_REF` environment variable
-2. Stores it in the `GITHUB_OUTPUT` for use in later steps.
-
-
-2. `spell-check` Job
-
-Note: This job waits for the `get_branch` job to complete successfully before starting.
-
-Purpose: Checks spelling in the repository.
-
-Steps: 
-1. Fetches the repository's content 
-2. Uses a custom action to check spelling, configured with parameters like `check_type`, `error_min`, and the branch name extracted in the `get_branch` job.
-3. Displays the path to the spelling report, the contents of the report, and the number of detected errors.
-
-
-3. `urls-check` Job
-
-Purpose: Verifies that URLs in the repository are valid.
-
-Steps:
-1. Fetches the repository's content.
-2. Uses the same custom action for checking, but with the `check_type` set to URLs, and it's configured to allow for a minimum of 0 errors.
-3. Shows the path to the URL check report, its contents, and the error count.
-
-
-4. `quiz-format` Job
-
-Purpose: Checks the formatting of quizzes in the repository.
-
-Steps:
-1. Checks out the repository's content.
-2. Uses the custom action with `check_type` set to `quiz_format`, and similar to URLs check, it's set to tolerate a minimum of 0 errors.
-3. Outputs the path to the quiz format report, its content, and the number of errors detected.
-
-
-## report-maker.yml
-
-This GitHub Actions (GHA) workflow, "Run error checker", runs checks based on specific inputs and handles commenting on pull requests with the results of these checks.
-
-It is composed of two jobs: `status-update` and `error-check`:
-
-1. `status-update` Job
-
-Steps:
-1. Based on the `check_type` input, it sets variables for the error name and ignore file path.
-2. Captures the current time and commit ID for later use 
-3. Uses an external action (`peter-evans/find-comment@v3`) to find an existing comment by github-actions[bot] that includes the specified error name.
-4. If a comment is found, it updates the comment to indicate that the check is being re-run, using the time and commit ID captured earlier.
-
-
-2. `error-check` Job
-
-Similar initial steps as `status-update` job to declare error names based on check_type.
-
-Steps:
-1. Checks out the code from a branch named `preview-${{ github.event.pull_request.number }}`
-2. Executes the actual check using a custom action `jhudsl/ottr-reports@main`
-3. Captures additional details such as the link to the ignore file and the URL for the error report.
-4. Uses an external action (`peter-evans/find-comment@v3`) to find an existing comment by github-actions[bot] that includes the specified error name.
-5. If check failed, a comment is made or updated to indicate the check did not fully run. 
-6. If there are more errors than allowed (error_min), it comments with details about the errors and links to the report. Conversely, if the errors are within the acceptable range, it updates or posts a comment indicating there are no errors.
-7. Commit the report file generated by the checks into a branch. It also counts the number of errors and stores this count for subsequent steps.
-8. Based on the number of errors relative to error_min, different actions are taken. If there are too many errors, it fails the job; otherwise, it acknowledges the acceptable error count.
-9. Comments are made or updated on the pull request to reflect the outcome of the checks, providing feedback directly in the PR discussion.
-
+You can use the [ottrpal R package](https://github.com/ottrproject/ottrpal) yourself for other uses.

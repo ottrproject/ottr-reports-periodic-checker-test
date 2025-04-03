@@ -31,8 +31,6 @@ inputs:
     description: "Should this action automatically alphabetize your dictionary.txt"
     default: false
     type: boolean
-  gh_pat:
-    required: true
 
 runs:
   using: "composite"

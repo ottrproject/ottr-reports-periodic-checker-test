@@ -10,9 +10,8 @@ jobs:
   ottr-reports:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
       pull-requests: write
-      
+
 
     steps:
     - name: Checkout Actions Repository
