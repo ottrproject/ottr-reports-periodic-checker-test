@@ -1,7 +1,7 @@
 
 # A Test Rmd
 
-*If you haven't yet read the getting started Wiki pages; [start there](https://github.com/jhudsl/OTTR_Template/wiki/Getting-started)
+*If you haven't yet read the getting started pages go to there https://ottrproject.org/index.html*
 
 Every chapter needs to start out with this chunk of code:
 
@@ -14,7 +14,7 @@ ottrpal::set_knitr_image_path()
 
 This chapter will cover:  
 
-- {You can use https://tips.uark.edu/using-blooms-taxonomy/ to define some learning objectives here}
+- {Define some learning objectives here}
 - {Another learning objective}
 
 ## Libraries
