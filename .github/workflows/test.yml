@@ -12,11 +12,14 @@ jobs:
     steps:
     - name: Checkout Actions Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Run Reports
       id: run-reports
       uses: ottrproject/ottr-reports@acoffman/artifacts
       with:
+        gh_pat: ${{ secrets.GH_PAT }}
         check_spelling: TRUE
         spelling_error_min: 1
         check_urls: TRUE
@@ -24,5 +27,3 @@ jobs:
         check_quiz_form: TRUE
         quiz_error_min: 1
         sort_dictionary: true
-      secrets:
-        gh_pat: ${{ secrets.gh_pat }}
