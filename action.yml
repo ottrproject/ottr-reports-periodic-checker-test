@@ -1,35 +1,242 @@
 name: 'ottr-reports'
-author: "Candace Savonen"
+author: "Candace Savonen and Adam Coffman"
 description: "Run OTTR checks for spelling, urls, and quiz formats"
 
 inputs:
-  check_type:
-    description: "There are three types of reports that can be done and specified: 'spelling', 'urls', or 'quiz_format'."
-    required: true
-    type: string
+  check_spelling:
+    description: "Whether to run the spelling check"
+    default: false
+    type: boolean
+  check_urls:
+    description: "Whether to run the URL check"
+    default: false
+    type: boolean
+  check_quiz_form:
+    description: "Whether to run the quiz format check"
+    default: false
+    type: boolean
+  spelling_error_min:
+    description: "Number of spelling errors that should make this check fail"
+    default: 0
+    type: number
+  url_error_min:
+    description: "Number of URL errors that should make this check fail"
+    default: 0
+    type: number
+  quiz_error_min:
+    description: "Number of quiz format errors that should make this check fail"
+    default: 0
+    type: number
   sort_dictionary:
     description: "Should this action automatically alphabetize your dictionary.txt"
     default: false
     type: boolean
-  error_min:
-    description: "What number of errors should make this check fail?"
-    default: 0
-    type: number
-
-outputs:
-  error_name:
-    description: "The name of the error that was run"
-  report_path:
-    description: "The relative path to where the report was saved."
-  error_num:
-    description: "How many errors were found."
 
 runs:
-  using: 'docker'
-  image: 'docker://jhudsl/ottr-reports'
-  args:
-    - ${{ inputs.check_type }}
-    - ${{ inputs.error_min }}
+  using: "composite"
+  steps:
+    - name: Check if any checks are enabled
+      id: validate
+      run: |
+        if [[ "${{ inputs.check_spelling }}" != "true" ]] && \
+           [[ "${{ inputs.check_urls }}" != "true" ]] && \
+           [[ "${{ inputs.check_quiz_form }}" != "true" ]]; then
+          echo "No checks were enabled. Please enable at least one check."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Build components for the comments
+      id: build-components
+      run: |
+        echo "link_to_ignore_file=https://github.com/${GITHUB_REPOSITORY}/edit/${GITHUB_REF_NAME}/resources/dictionary.txt" >> $GITHUB_OUTPUT
+        echo "time=$(date +'%Y-%m-%d-%T')" >> $GITHUB_OUTPUT
+        echo "commit_id=$GITHUB_SHA" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Find existing comment to update
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3
+      id: find-comment
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: "OTTR Check Results"
+
+    # Post initial status
+    - name: Post initial status
+      uses: peter-evans/create-or-update-comment@v4
+      id: initial-comment
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # OTTR Check Results
+          :runner: Checks are currently running...
+
+          _Last Updated: ${{ steps.build-components.outputs.time }}_
+        edit-mode: replace
+
+    # Spelling Check
+    - name: Run spelling check
+      if: inputs.check_spelling == 'true'
+      id: spelling_check
+      run: |
+        echo "Running spelling check..."
+
+        docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
+          jhudsl/ottrpal:dev \
+          spelling "/home" || exit_code=$?
+
+        report_path=${{ github.workspace }}/check_reports/spell_check_results.tsv
+
+        if [ -f "$report_path" ]; then
+          error_num=$(cat $report_path | wc -l)
+          error_num="$((error_num-1))"
+        else
+          error_num=0
+          echo "No report file found"
+        fi
+
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
+        echo "status=$( [ $error_num -le ${{ inputs.spelling_error_min }} ] && echo "success" || echo "failure" )" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # URL Check
+    - name: Run URL check
+      if: inputs.check_urls == 'true'
+      id: url_check
+      run: |
+        echo "Running URL check..."
+
+        docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
+          jhudsl/ottrpal:dev \
+          urls "/home" || exit_code=$?
+
+        report_path=${{ github.workspace }}/check_reports/url_checks.tsv
+
+        if [ -f "$report_path" ]; then
+          error_num=$(cat $report_path | wc -l)
+          error_num="$((error_num-1))"
+        else
+          error_num=0
+          echo "No report file found"
+        fi
+
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
+        echo "status=$( [ $error_num -le ${{ inputs.url_error_min }} ] && echo "success" || echo "failure" )" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # Quiz Format Check
+    - name: Run quiz format check
+      if: inputs.check_quiz_form == 'true'
+      id: quiz_check
+      run: |
+        echo "Running quiz format check..."
+
+        docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
+          jhudsl/ottrpal:dev \
+          quiz_format "/home" || exit_code=$?
+
+        report_path=${{ github.workspace }}/check_reports/question_error_report.tsv
+
+        if [ -f "$report_path" ]; then
+          error_num=$(cat $report_path | wc -l)
+          error_num="$((error_num-1))"
+        else
+          error_num=0
+          echo "No report file found"
+        fi
+
+        echo "error_num=$error_num" >> $GITHUB_OUTPUT
+        echo "status=$( [ $error_num -le ${{ inputs.quiz_error_min }} ] && echo "success" || echo "failure" )" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # Package artifacts if any checks failed
+    - name: Package artifacts
+      if: always()
+      id: package_artifacts
+      run: |
+        mkdir -p all_reports
+        any_failures=false
+
+        if [[ "${{ inputs.check_spelling == 'true' && steps.spelling_check.outputs.status == 'failure' }}" == "true" ]]; then
+          cp check_reports/spell_check_results.tsv all_reports/ 2>/dev/null || true
+          any_failures=true
+        fi
+
+        if [[ "${{ inputs.check_urls == 'true' && steps.url_check.outputs.status == 'failure' }}" == "true" ]]; then
+          cp check_reports/url_checks.tsv all_reports/ 2>/dev/null || true
+          any_failures=true
+        fi
+
+        if [[ "${{ inputs.check_quiz_form == 'true' && steps.quiz_check.outputs.status == 'failure' }}" == "true" ]]; then
+          cp check_reports/question_error_report.tsv all_reports/ 2>/dev/null || true
+          any_failures=true
+        fi
+
+        echo "any_failures=$any_failures" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # Upload combined artifacts if there were any failures
+    - name: Upload combined artifacts
+      if: steps.package_artifacts.outputs.any_failures == 'true'
+      id: upload_artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ottr-check-reports
+        path: all_reports/
+        if-no-files-found: error
+
+    # Update comment with final results
+    - name: Update results comment
+      if: always()
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.initial-comment.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # OTTR Check Results
+
+          ### Summary
+          ${{ inputs.check_spelling == 'true' && format('- Spelling check: {0} {1} ({2} errors found, threshold: {3})',
+            steps.spelling_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
+            steps.spelling_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
+            steps.spelling_check.outputs.error_num,
+            inputs.spelling_error_min) || '' }}
+          ${{ inputs.check_urls == 'true' && format('- URL check: {0} {1} ({2} errors found, threshold: {3})',
+            steps.url_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
+            steps.url_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
+            steps.url_check.outputs.error_num,
+            inputs.url_error_min) || '' }}
+          ${{ inputs.check_quiz_form == 'true' && format('- Quiz format check: {0} {1} ({2} errors found, threshold: {3})',
+            steps.quiz_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
+            steps.quiz_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
+            steps.quiz_check.outputs.error_num,
+            inputs.quiz_error_min) || '' }}
+
+          ${{ steps.package_artifacts.outputs.any_failures == 'true' && format('### :warning: Some Checks Failed [Click here to download detailed error reports]({0})', steps.upload_artifacts.outputs.artifact-url) || '### :tada: All checks passed!' }}
+
+          _Last Updated: ${{ steps.build-components.outputs.time }}_
+        edit-mode: replace
+
+    # Final exit if any checks failed
+    - name: Check for failures
+      if: always()
+      run: |
+        if [[ "${{ steps.package_artifacts.outputs.any_failures }}" == "true" ]]; then
+          echo "One or more checks failed"
+          exit 1
+        fi
+      shell: bash
 
 branding:
   icon: "briefcase"
