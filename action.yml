@@ -31,7 +31,8 @@ inputs:
     description: "Should this action automatically alphabetize your dictionary.txt"
     default: false
     type: boolean
-  token:
+secrets:
+  gh_pat:
     required: true
 
 runs:
@@ -83,7 +84,7 @@ runs:
 
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
-        token: ${{ inputs.token }}
+        token: ${{ secrets.gh_pat }}
 
     # Spelling Check
     - name: Run spelling check
@@ -230,6 +231,7 @@ runs:
 
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
+        token: ${{ secrets.gh_pat }}
 
     # Final exit if any checks failed
     - name: Check for failures

@@ -17,7 +17,6 @@ jobs:
       id: run-reports
       uses: ottrproject/ottr-reports@acoffman/artifacts
       with:
-        token: ${{ secrets.GH_PAT }}
         check_spelling: TRUE
         spelling_error_min: 1
         check_urls: TRUE
@@ -25,3 +24,5 @@ jobs:
         check_quiz_form: TRUE
         quiz_error_min: 1
         sort_dictionary: true
+      secrets:
+        gh_pat: ${{ secrets.gh_pat }}
