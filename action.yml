@@ -1,5 +1,5 @@
 name: 'ottr-reports'
-author: "Candace Savonen"
+author: "Candace Savonen and Adam Coffman"
 description: "Run OTTR checks for spelling, urls, and quiz formats"
 
 inputs:
