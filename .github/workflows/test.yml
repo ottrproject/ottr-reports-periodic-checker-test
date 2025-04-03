@@ -24,5 +24,4 @@ jobs:
         url_error_min: 1
         check_quiz_form: TRUE
         quiz_error_min: 1
-        branch_name: "${GITHUB_REF##*/}"
         sort_dictionary: true

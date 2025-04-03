@@ -169,22 +169,22 @@ runs:
       run: |
         mkdir -p all_reports
         any_failures=false
-        
+
         if [[ "${{ inputs.check_spelling == 'true' && steps.spelling_check.outputs.status == 'failure' }}" == "true" ]]; then
           cp check_reports/spell_check_results.tsv all_reports/ 2>/dev/null || true
           any_failures=true
         fi
-        
+
         if [[ "${{ inputs.check_urls == 'true' && steps.url_check.outputs.status == 'failure' }}" == "true" ]]; then
           cp check_reports/url_checks.tsv all_reports/ 2>/dev/null || true
           any_failures=true
         fi
-        
+
         if [[ "${{ inputs.check_quiz_form == 'true' && steps.quiz_check.outputs.status == 'failure' }}" == "true" ]]; then
           cp check_reports/question_error_report.tsv all_reports/ 2>/dev/null || true
           any_failures=true
         fi
-        
+
         echo "any_failures=$any_failures" >> $GITHUB_OUTPUT
       shell: bash
 
@@ -207,26 +207,26 @@ runs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           # OTTR Check Results
-          
+
           ### Summary
-          ${{ inputs.check_spelling == 'true' && format('- Spelling check: {0} {1} ({2} errors found, threshold: {3})', 
+          ${{ inputs.check_spelling == 'true' && format('- Spelling check: {0} {1} ({2} errors found, threshold: {3})',
             steps.spelling_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
             steps.spelling_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
             steps.spelling_check.outputs.error_num,
             inputs.spelling_error_min) || '' }}
-          ${{ inputs.check_urls == 'true' && format('- URL check: {0} {1} ({2} errors found, threshold: {3})', 
+          ${{ inputs.check_urls == 'true' && format('- URL check: {0} {1} ({2} errors found, threshold: {3})',
             steps.url_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
             steps.url_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
             steps.url_check.outputs.error_num,
             inputs.url_error_min) || '' }}
-          ${{ inputs.check_quiz_form == 'true' && format('- Quiz format check: {0} {1} ({2} errors found, threshold: {3})', 
+          ${{ inputs.check_quiz_form == 'true' && format('- Quiz format check: {0} {1} ({2} errors found, threshold: {3})',
             steps.quiz_check.outputs.status == 'success' && ':white_check_mark:' || ':x:',
             steps.quiz_check.outputs.status == 'success' && 'PASSED' || 'FAILED',
             steps.quiz_check.outputs.error_num,
             inputs.quiz_error_min) || '' }}
-          
+
           ${{ steps.package_artifacts.outputs.any_failures == 'true' && format('### :warning: Some Checks Failed [Click here to download detailed error reports]({0})', steps.upload_artifacts.outputs.artifact-url) || '### :tada: All checks passed!' }}
-          
+
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
 
