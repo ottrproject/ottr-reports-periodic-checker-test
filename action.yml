@@ -83,6 +83,7 @@ runs:
 
           _Last Updated: ${{ steps.build-components.outputs.time }}_
         edit-mode: replace
+        token: ${{ inputs.token }}
 
     # Spelling Check
     - name: Run spelling check
