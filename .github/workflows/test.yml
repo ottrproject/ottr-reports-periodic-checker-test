@@ -21,9 +21,8 @@ jobs:
 
     - name: Run Reports
       id: run-reports
-      uses: ottrproject/ottr-reports@acoffman/artifacts
+      uses: ottrproject/ottr-reports@main
       with:
-        gh_pat: ${{ secrets.GH_PAT }}
         check_spelling: TRUE
         spelling_error_min: 1
         check_urls: TRUE
