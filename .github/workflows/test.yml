@@ -15,7 +15,7 @@ jobs:
 
     - name: Run Reports
       id: run-reports
-      uses: ./ottr-reports@acoffman/artifacts
+      uses: ./@acoffman/artifacts
       with:
         token: ${{ secrets.GH_PAT }}
         check_spelling: TRUE
