@@ -9,6 +9,9 @@ on:
 jobs:
   ottr-reports:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      
     steps:
     - name: Checkout Actions Repository
       uses: actions/checkout@v4
