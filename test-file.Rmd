@@ -1,7 +1,7 @@
 
 # A Test Rmd
 
-*If you haven't yet read the getting started pages go to there https://ottrproject.org/index.html
+*If you haven't yet read the getting started Wiki pages; [start there](https://github.com/jhudsl/OTTR_Template/wiki/Getting-started)
 
 Every chapter needs to start out with this chunk of code:
 
@@ -20,6 +20,8 @@ This chapter will cover:
 ## Libraries
 
 For this chapter, we'll need the following packages attached:
+
+*Remember to add [any additional packages you need to your course's own docker image](https://github.com/jhudsl/OTTR_Template/wiki/Using-Docker#starting-a-new-docker-image).
 
 ```{r}
 library(magrittr)
@@ -148,7 +150,7 @@ Here is a link to the DaSL Collection: <https://raw.githubusercontent.com/fhdsl/
 
 ## Print out session info
 
-You should print out session info when you have code for [reproducibility purposes](https://jhudatascience.org/Reproducibility_in_Cancer_Informatics/managing-package-versions.html).
+You should print out session info when you have code for [reproducibility purposes](https://ottrproject.org/Reproducibility_in_Cancer_Informatics/managing-package-versions.html).
 
 ```{r}
 devtools::session_info()
