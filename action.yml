@@ -92,7 +92,7 @@ runs:
         docker run -v ${{ github.workspace }}:/home \
           --workdir=/home \
           jhudsl/ottrpal:dev \
-          spelling "/home" || exit_code=$?
+          spelling || exit_code=$?
 
         report_path=${{ github.workspace }}/check_reports/spell_check_results.tsv
 
@@ -118,7 +118,7 @@ runs:
         docker run -v ${{ github.workspace }}:/home \
           --workdir=/home \
           jhudsl/ottrpal:dev \
-          urls "/home" || exit_code=$?
+          urls || exit_code=$?
 
         report_path=${{ github.workspace }}/check_reports/url_checks.tsv
 
@@ -144,7 +144,7 @@ runs:
         docker run -v ${{ github.workspace }}:/home \
           --workdir=/home \
           jhudsl/ottrpal:dev \
-          quiz_format "/home" || exit_code=$?
+          quiz_format || exit_code=$?
 
         report_path=${{ github.workspace }}/check_reports/question_error_report.tsv
 
@@ -194,7 +194,6 @@ runs:
       with:
         name: ottr-check-reports
         path: all_reports/
-        if-no-files-found: error
 
     # Update comment with final results
     - name: Update results comment
