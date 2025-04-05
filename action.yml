@@ -157,7 +157,7 @@ runs:
         fi
 
         echo "error_num=$error_num" >> $GITHUB_OUTPUT
-        echo "status=$( [ \"$error_num\" -le \"${inputs.quiz_error_min}\" ] && echo success || echo failure )" >> $GITHUB_OUTPUT
+        echo "status=$( [ $error_num -le ${{ inputs.quiz_error_min }} ] && echo "success" || echo "failure" )" >> $GITHUB_OUTPUT
       shell: bash
 
     # Package artifacts if any checks failed
