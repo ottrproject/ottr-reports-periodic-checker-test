@@ -90,6 +90,7 @@ runs:
         echo "Running spelling check..."
 
         docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
           jhudsl/ottrpal:dev \
           spelling "/home" || exit_code=$?
 
@@ -115,6 +116,7 @@ runs:
         echo "Running URL check..."
 
         docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
           jhudsl/ottrpal:dev \
           urls "/home" || exit_code=$?
 
@@ -140,6 +142,7 @@ runs:
         echo "Running quiz format check..."
 
         docker run -v ${{ github.workspace }}:/home \
+          --workdir=/home \
           jhudsl/ottrpal:dev \
           quiz_format "/home" || exit_code=$?
 
