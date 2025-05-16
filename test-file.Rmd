@@ -153,3 +153,10 @@ You should print out session info when you have code for .
 ```{r}
 devtools::session_info()
 ```
+
+
+
+
+spellinggg to make the checkkkk failll
+
+sldmaslkd asdmasldk askldmnaskl
