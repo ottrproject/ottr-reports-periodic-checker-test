@@ -61,6 +61,7 @@ runs:
 
     # Find existing comment to update
     - name: Find Comment
+      if: github.event_name == 'pull_request'
       uses: peter-evans/find-comment@v3
       id: find-comment
       with:
