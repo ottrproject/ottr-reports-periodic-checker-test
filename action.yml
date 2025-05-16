@@ -71,6 +71,7 @@ runs:
 
     # Post initial status
     - name: Post initial status
+      if: github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v4
       id: initial-comment
       with:
@@ -198,7 +199,7 @@ runs:
 
     # Update comment with final results
     - name: Update results comment
-      if: always()
+      if: github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v4
       with:
         comment-id: ${{ steps.initial-comment.outputs.comment-id }}
