@@ -94,8 +94,6 @@ OR this works:
 
 This works nicely:
 
-<iframe src="https://www.bgsu.edu/content/dam/BGSU/center-for-faculty-excellence/docs/TLGuides/TLGuide-Learning-Objectives.pdf" width="672" height="800px"></iframe>
-
 ### Links to websites
 
 Examples of including a website link.
@@ -150,7 +148,7 @@ Here is a link to the DaSL Collection: <https://raw.githubusercontent.com/fhdsl/
 
 ## Print out session info
 
-You should print out session info when you have code for [reproducibility purposes](https://ottrproject.org/Reproducibility_in_Cancer_Informatics/managing-package-versions.html).
+You should print out session info when you have code for .
 
 ```{r}
 devtools::session_info()

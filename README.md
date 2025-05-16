@@ -44,7 +44,7 @@ In other words, what number of errors should make this check fail? Default is `0
 
 ## Outputs
 
-A comment on your pull request with a summary of your checsk and a zip file with the respective reports :
+A comment on your pull request with a summary of your checks and a zip file with the respective reports :
 'spell_check_results.tsv', 'url_checks.csv', or question_error_report.tsv',
 
 
@@ -52,4 +52,4 @@ A comment on your pull request with a summary of your checsk and a zip file with
 
 All checks are run by the `jhudsl/ottrpal` docker image which contains the `ottrpal` R package.
 
-You can use the [ottrpal R package](https://github.com/ottrproject/ottrpal) yourself for other uses.
+You can use the [`ottrpal` R package](https://github.com/ottrproject/ottrpal) yourself for other uses.
