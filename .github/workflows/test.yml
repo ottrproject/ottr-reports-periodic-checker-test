@@ -21,7 +21,7 @@ jobs:
 
     - name: Run Reports
       id: run-reports
-      uses: ottrproject/ottr-reports@main
+      uses: ottrproject/ottr-reports-periodic-checker-test@main
       with:
         check_spelling: TRUE
         spelling_error_min: 1
